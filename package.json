@@ -4,7 +4,8 @@
   "description": "StreetKode is a community platform to showcase the works of emerging streetwear brands and designers.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server/server.js"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,12 @@
   "bugs": {
     "url": "https://github.com/steveanthony999/streetkode/issues"
   },
-  "homepage": "https://github.com/steveanthony999/streetkode#readme"
+  "homepage": "https://github.com/steveanthony999/streetkode#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.1"
+  }
 }
