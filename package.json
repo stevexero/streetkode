@@ -1,0 +1,28 @@
+{
+  "name": "streetkode",
+  "version": "1.0.0",
+  "description": "StreetKode is a community platform to showcase the works of emerging streetwear brands and designers.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steveanthony999/streetkode.git"
+  },
+  "keywords": [
+    "open-source",
+    "design",
+    "streetwear",
+    "fashion",
+    "underground",
+    "clothing",
+    "hacktoberfest"
+  ],
+  "author": "Steven Woodward and Kylo Kyoshi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/steveanthony999/streetkode/issues"
+  },
+  "homepage": "https://github.com/steveanthony999/streetkode#readme"
+}
