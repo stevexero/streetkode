@@ -1,3 +1,2 @@
-DEVELOPMENT=true
-
-PORT=8000
+node_modules
+.env
