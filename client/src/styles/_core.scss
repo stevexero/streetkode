@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
+
+$font-stack: 'Plus Jakarta Sans', sans-serif;
+$color-dark-blue: #13183f;
+$color-med-blue: #666ca3;
+$color-med-grey: #83869a;
+$color-dark-pink: #f74780;
+$color-med-pink: #ffa7c3;
+$color-white: #ffffff;
+$color-gradient-pink: #f02aa6;
+$color-gradient-orange: #ff6f48;
+$color-gradient-blue: #4851ff;
+
+$font-weight-extra-bold: 800;
+$font-weight-bold: 700;
+$font-weight-medium: 500;
+
+$font-size-heading-xl: 56px;
+$font-size-heading-l: 40px;
+$font-size-heading-m: 32px;
+$font-size-heading-s: 24px;
+$font-size-body-m: 18px;
+$font-size-body-s: 16px;
+
+$line-height-heading-xl: 70px;
+$line-height-heading-l: 51px;
+$line-height-heading-m: 40px;
+$line-height-standard: 28px;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-body-s;
+  line-height: $line-height-standard;
+}
+
+body {
+  font-family: $font-stack;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.heading-xl {
+  font-weight: $font-weight-extra-bold;
+  font-size: $font-size-heading-xl;
+  line-height: $line-height-heading-xl;
+}
+
+.heading-l {
+  font-weight: $font-weight-extra-bold;
+  font-size: $font-size-heading-l;
+  line-height: $line-height-heading-l;
+}
+
+.heading-m {
+  font-weight: $font-weight-extra-bold;
+  font-size: $font-size-heading-m;
+  line-height: $line-height-heading-m;
+}
+
+.heading-s {
+  font-weight: $font-weight-extra-bold;
+  font-size: $font-size-heading-s;
+  line-height: $line-height-standard;
+}
+
+.body-m {
+  font-weight: $font-weight-medium;
+  font-size: $font-size-body-m;
+  line-height: $line-height-standard;
+}
+
+.body-s {
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-s;
+  line-height: $line-height-standard;
+}
