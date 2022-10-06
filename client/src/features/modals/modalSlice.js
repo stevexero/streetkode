@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   isAuthModalOpen: false,
+  isOnLogin: true,
   modalStyle: {
     position: 'absolute',
     top: '50%',
@@ -11,7 +12,6 @@ const initialState = {
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
   },
-  isAddCategoryModalOpen: false,
 };
 
 export const modalSlice = createSlice({
@@ -24,8 +24,15 @@ export const modalSlice = createSlice({
     closeAuthModal: (state) => {
       state.isAuthModalOpen = false;
     },
+    switchToSignUp: (state) => {
+      state.isOnLogin = false;
+    },
+    switchToLogin: (state) => {
+      state.isOnLogin = true;
+    },
   },
 });
 
-export const { openAuthModal, closeAuthModal } = modalSlice.actions;
+export const { openAuthModal, closeAuthModal, switchToSignUp, switchToLogin } =
+  modalSlice.actions;
 export default modalSlice.reducer;
