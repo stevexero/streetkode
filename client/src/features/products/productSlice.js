@@ -9,7 +9,28 @@ const initialState = {
   message: '',
 };
 
+// GET ALL PRODUCTS
+// PUBLIC
+export const getAllProducts = createAsyncThunk(
+  'products/get-all-products',
+  async (_, thunkAPI) => {
+    try {
+      return await productService.getAllProducts();
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 // ADD PRODUCT
+// PRIVATE
 export const addProduct = createAsyncThunk(
   'products/add-product',
   async (productInfo, thunkAPI) => {
@@ -41,6 +62,20 @@ export const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(getAllProducts.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllProducts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.products = action.payload;
+        console.log(state.products);
+      })
+      .addCase(getAllProducts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
       .addCase(addProduct.pending, (state) => {
         state.isLoading = true;
       })
