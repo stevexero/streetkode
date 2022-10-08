@@ -15,8 +15,10 @@ const Navbar = () => {
     dispatch(openAuthModal());
   };
 
-  const handleLogoutClick = () => {
-    dispatch(logout());
+  const handleSelect = (e) => {
+    if (e === 'logout') {
+      dispatch(logout());
+    }
   };
 
   const showCart = () => {
@@ -31,11 +33,23 @@ const Navbar = () => {
         </li>
         <li>
           {user ? (
-            <button onClick={handleLogoutClick}>Logout</button>
+            <select
+              name='user-menu'
+              id='user-menu'
+              onChange={(e) => handleSelect(e.target.value)}
+            >
+              <option value='profile'>profile</option>
+              <option value='logout'>logout</option>
+            </select>
           ) : (
             <button onClick={handleLoginClick}>Login</button>
           )}
         </li>
+        {user && (
+          <li>
+            <Link to='/add-product'>Add Product</Link>
+          </li>
+        )}
         <li>
           <button onClick={showCart}>
             <RiShoppingCartLine />
