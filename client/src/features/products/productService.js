@@ -48,21 +48,35 @@ const addProduct = async (productInfo) => {
       product: {
         name: productInfo.name,
         price: productInfo.price,
-        image: productInfo.image.myFile,
+        // assets: productInfo.assets,
       },
     },
     config
   );
 
-  //   await axios.post(
-  //     API_URL + res.data.id + '/assets',
+  await productInfo.assets.map((asset) =>
+    axios.post(
+      'https://api.chec.io/v1/assets',
+      {
+        filename: asset.original_filename + '.' + asset.format,
+        file_extension: asset.format,
+        url: asset.url,
+      },
+      config
+    )
+  );
+
+  //   await axios.put(
+  //     `https://api.chec.io/v1/products/${res.data.id}/assets`,
   //     {
-  //       product: {
-  //         image: productInfo.image,
-  //       },
+  //       assets: productInfo.assets,
   //     },
   //     config
   //   );
+
+  //   addAssets(res.data.id, productInfo);
+
+  console.log(res.data);
 
   return res.data;
 };

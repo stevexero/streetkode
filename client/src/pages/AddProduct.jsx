@@ -31,21 +31,26 @@ const AddProduct = () => {
 
     const resArr = await Promise.all(uploader);
 
-    const urls = resArr.map((res) => res.data.url);
+    const urls = resArr.map((res) => res.data);
+
+    console.log(urls);
 
     return urls;
   };
 
   const sendForm = async (e, images) => {
-    const form = e.target;
-    const formElements = form.elements;
-    // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
+    // const form = e.target;
+    // const formElements = form.elements;
+
     const reqBody = {
-      name: formElements.productTitle.productTitle,
+      name: productTitle,
       price: +productPrice,
-      attachments: images,
+      assets: images,
     };
-    await postMessage(reqBody);
+    // await postMessage(reqBody);
+    // console.log(reqBody);
+    dispatch(addProduct(reqBody));
+
     setProductTitle('');
     setProductPrice('');
     setSelectedImages([]);
@@ -83,12 +88,6 @@ const AddProduct = () => {
   //       reject(error);
   //     };
   //   });
-  // };
-
-  // const handleFileUpload = async (e) => {
-  //   const file = e.target.files[0];
-  //   const base64 = await convertToBase64(file);
-  //   setSelectedImage({ ...selectedImage, myFile: base64 });
   // };
 
   // Submit
