@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://api.chec.io/v1/products';
+const API_URL = 'https://api.chec.io/v1/products/';
 
 // GET ALL PRODUCTS
 const getAllProducts = async () => {
@@ -29,7 +29,7 @@ const getProduct = async (productId) => {
 
   const res = await axios.get(API_URL + productId, config);
 
-  return res.data.data;
+  return res.data;
 };
 
 // ADD PRODUCT

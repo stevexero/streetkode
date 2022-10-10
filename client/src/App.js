@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 // Public
 import Home from './pages/Home';
 import Shop from './pages/Shop';
+import ProductPage from './pages/ProductPage';
 import NotFound from './pages/NotFound';
 
 // Private
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/shop' element={<Shop />} />
+          <Route path='/shop/:productId' element={<ProductPage />} />
           <Route
             path='/add-product'
             element={user ? <AddProduct /> : <NotFound />}
