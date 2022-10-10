@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 
@@ -13,7 +13,23 @@ const AddProduct = () => {
   const [productPrice, setProductPrice] = useState(0);
   const [selectedImages, setSelectedImages] = useState([]);
 
+  // Submit form - if images, upload images, else send form
+  const handleSubmit = async (e) => {
+    console.log('Submitting...');
+    e.preventDefault();
+
+    if (selectedImages.length > 0) {
+      const imageURLS = await uploadImages(selectedImages);
+
+      sendForm(e, imageURLS);
+    } else {
+      sendForm(e, null);
+    }
+  };
+
+  // Upload to Cloudinary if images
   const uploadImages = async (files) => {
+    console.log('Uploading images...');
     const uploader = files.map((image) => {
       const formData = new FormData();
 
@@ -33,22 +49,17 @@ const AddProduct = () => {
 
     const urls = resArr.map((res) => res.data);
 
-    console.log(urls);
-
     return urls;
   };
 
   const sendForm = async (e, images) => {
-    // const form = e.target;
-    // const formElements = form.elements;
-
+    console.log('sending form...');
     const reqBody = {
       name: productTitle,
       price: +productPrice,
-      assets: images,
+      imageArray: images,
     };
-    // await postMessage(reqBody);
-    // console.log(reqBody);
+
     dispatch(addProduct(reqBody));
 
     setProductTitle('');
@@ -56,65 +67,10 @@ const AddProduct = () => {
     setSelectedImages([]);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (selectedImages.length > 0) {
-      const imageURLS = await uploadImages(selectedImages);
-
-      sendForm(e, imageURLS);
-    } else {
-      sendForm(e, null);
-    }
-  };
-
-  // Images
-  // useEffect(() => {
-  //   if (selectedImage !== undefined) {
-  //     const formData = new FormData();
-  //     formData.append('file', selectedImage);
-  //     // formData.append('upload_preset', process.env.REACT_APP_UPLOAD_PRESET);
-  //   }
-  // }, [selectedImage]);
-
-  // const convertToBase64 = (file) => {
-  //   return new Promise((resolve, reject) => {
-  //     const fileReader = new FileReader();
-  //     fileReader.readAsDataURL(file);
-  //     fileReader.onload = () => {
-  //       resolve(fileReader.result);
-  //     };
-  //     fileReader.onerror = (error) => {
-  //       reject(error);
-  //     };
-  //   });
-  // };
-
-  // Submit
-  // const handleProductSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   const productInfo = {
-  //     name: productTitle,
-  //     price: +productPrice,
-  //     // image: selectedImage,
-  //   };
-
-  //   console.log(productInfo);
-
-  //   dispatch(addProduct(productInfo));
-
-  //   alert(`Woohoo! You added ${productTitle} at a price of ${productPrice}`);
-
-  //   setProductTitle('');
-  //   setProductPrice(0);
-  //   // setSelectedImage('');
-  // };
-
   return (
     <div>
-      {/* <form onSubmit={handleProductSubmit}> */}
       <form onSubmit={handleSubmit}>
+        {/* Display Images to be uploaded */}
         {selectedImages && (
           <div>
             {selectedImages.map((image) => (
@@ -152,12 +108,6 @@ const AddProduct = () => {
             setSelectedImages([...selectedImages, e.target.files[0]])
           }
         />
-        {/* <input
-          id='profile-image'
-          type='file'
-          // hidden
-          onChange={(e) => setSelectedImage(e.target.files[0])}
-        /> */}
         <button type='submit'>Add Product</button>
       </form>
     </div>

@@ -48,37 +48,76 @@ const addProduct = async (productInfo) => {
       product: {
         name: productInfo.name,
         price: productInfo.price,
-        // assets: productInfo.assets,
       },
     },
     config
   );
 
-  await productInfo.assets.map((asset) =>
-    axios.post(
-      'https://api.chec.io/v1/assets',
-      {
-        filename: asset.original_filename + '.' + asset.format,
-        file_extension: asset.format,
-        url: asset.url,
-      },
-      config
-    )
-  );
-
-  //   await axios.put(
-  //     `https://api.chec.io/v1/products/${res.data.id}/assets`,
-  //     {
-  //       assets: productInfo.assets,
-  //     },
-  //     config
-  //   );
-
-  //   addAssets(res.data.id, productInfo);
-
-  console.log(res.data);
+  postImagesToChec(res.data.id, productInfo.imageArray);
 
   return res.data;
+};
+
+//   Posts new image(s) to chec asset library
+const postImagesToChec = async (id, imageArray) => {
+  const config = {
+    headers: {
+      'X-Authorization': process.env.REACT_APP_COMMERCE_API_KEY_TEST,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  };
+
+  await imageArray.map((asset) =>
+    axios
+      .post(
+        'https://api.chec.io/v1/assets',
+        {
+          filename: asset.original_filename + '.' + asset.format,
+          file_extension: asset.format,
+          url: asset.url,
+          meta: [id],
+        },
+        config
+      )
+      .then((res) => setImagesToPost(id))
+  );
+};
+
+// Save images to post
+const setImagesToPost = async (productId) => {
+  const config = {
+    headers: {
+      'X-Authorization': process.env.REACT_APP_COMMERCE_API_KEY_TEST,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  };
+
+  //   Get all assets
+  const allAssets = await axios.get('https://api.chec.io/v1/assets', config);
+
+  const currentAssetsArray = allAssets.data.data.filter(
+    (asset) => asset.meta[0] === productId
+  );
+
+  const temp = [];
+  await currentAssetsArray.forEach((asset) => {
+    temp.push({
+      id: asset.id,
+      url: asset.url,
+      filename: asset.filename,
+      file_extension: asset.file_extension,
+    });
+  });
+
+  await axios.put(
+    `https://api.chec.io/v1/products/${productId}/assets`,
+    {
+      assets: temp,
+    },
+    config
+  );
 };
 
 const productService = {
