@@ -8,7 +8,7 @@ import SingleProduct from '../components/SingleProduct';
 const Shop = () => {
   const dispatch = useDispatch();
 
-  const { products, isLoading, isSuccess } = useSelector(
+  const { products, isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.products
   );
 
@@ -21,8 +21,13 @@ const Shop = () => {
   }, [dispatch, isSuccess]);
 
   useEffect(() => {
+    if (isError) {
+      console.log('error: ');
+      console.log(message);
+    }
+
     dispatch(getAllProducts());
-  }, [dispatch]);
+  }, [dispatch, isError, message]);
 
   if (isLoading) {
     return <h1>Loading...</h1>;

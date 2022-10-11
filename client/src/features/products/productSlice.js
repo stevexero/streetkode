@@ -79,6 +79,7 @@ export const productSlice = createSlice({
       state.isError = false;
       state.isSuccess = false;
       state.message = '';
+      state.product = {};
     },
   },
   extraReducers: (builder) => {

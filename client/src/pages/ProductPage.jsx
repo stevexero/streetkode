@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import BackButton from '../components/BackButton';
 
 import { getProduct, reset } from '../features/products/productSlice';
 
@@ -39,7 +40,8 @@ const ProductPage = () => {
 
   return (
     <div>
-      {Object.keys(product).length !== 0 ? (
+      <BackButton url='/shop' />
+      {Object.keys(product).length > 0 ? (
         <>
           <h1>{product.name}</h1>
           <img src={product.image.url} alt={product.name} />
