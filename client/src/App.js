@@ -5,9 +5,11 @@ import { useSelector } from 'react-redux';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import ProductPage from './pages/ProductPage';
+import SellWithUs from './pages/SellWithUs';
 import NotFound from './pages/NotFound';
 
 // Private - Guest
+import RegisterShop from './pages/RegisterShop';
 
 // Private - Seller
 import AddProduct from './pages/AddProduct';
@@ -29,6 +31,11 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/shop' element={<Shop />} />
           <Route path='/shop/:productId' element={<ProductPage />} />
+          <Route path='/sell-with-us' element={<SellWithUs />} />
+          <Route
+            path='/register-shop'
+            element={user ? <RegisterShop /> : <NotFound />}
+          />
           <Route
             path='/add-product'
             element={user ? <AddProduct /> : <NotFound />}

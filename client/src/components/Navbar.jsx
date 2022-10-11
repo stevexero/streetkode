@@ -74,6 +74,9 @@ const Navbar = () => {
             <p>0</p>
           </button>
         </li>
+        <li>
+          <Link to='/sell-with-us'>Sell with us!</Link>
+        </li>
       </ul>
     </nav>
   );
