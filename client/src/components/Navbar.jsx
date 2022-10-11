@@ -53,6 +53,11 @@ const Navbar = () => {
             <Link to='/add-product'>Add Product</Link>
           </li>
         )}
+        {user && user.memberType === 'seller' && (
+          <li>
+            <Link to='/seller-home'>Seller Home</Link>
+          </li>
+        )}
         <li>
           <button onClick={showCart}>
             <RiShoppingCartLine />

@@ -12,6 +12,7 @@ import AddProduct from './pages/AddProduct';
 
 import Navbar from './components/Navbar';
 import AuthModal from './components/modals/AuthModal';
+import SellerHome from './pages/SellerHome';
 
 function App() {
   const { user } = useSelector((state) => state.auth);
@@ -29,6 +30,16 @@ function App() {
             element={user ? <AddProduct /> : <NotFound />}
           />
           <Route path='*' element={<NotFound />} />
+          <Route
+            path='/seller-home'
+            element={
+              user && user.memberType === 'seller' ? (
+                <SellerHome />
+              ) : (
+                <NotFound />
+              )
+            }
+          />
         </Routes>
       </Router>
       <AuthModal />
