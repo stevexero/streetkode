@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { RiShoppingCartLine } from 'react-icons/ri';
+import { RiShoppingCartLine, RiHeartLine } from 'react-icons/ri';
 
 import { logout } from '../features/auth/authSlice';
 import { openAuthModal } from '../features/modals/modalSlice';
@@ -19,6 +19,10 @@ const Navbar = () => {
     if (e === 'logout') {
       dispatch(logout());
     }
+  };
+
+  const showFavorites = () => {
+    console.log('favorites');
   };
 
   const showCart = () => {
@@ -58,6 +62,12 @@ const Navbar = () => {
             <Link to='/seller-home'>Seller Home</Link>
           </li>
         )}
+        <li>
+          <button onClick={showFavorites}>
+            <RiHeartLine />
+            <p>0</p>
+          </button>
+        </li>
         <li>
           <button onClick={showCart}>
             <RiShoppingCartLine />

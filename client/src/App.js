@@ -7,12 +7,16 @@ import Shop from './pages/Shop';
 import ProductPage from './pages/ProductPage';
 import NotFound from './pages/NotFound';
 
-// Private
-import AddProduct from './pages/AddProduct';
+// Private - Guest
 
-import Navbar from './components/Navbar';
-import AuthModal from './components/modals/AuthModal';
+// Private - Seller
+import AddProduct from './pages/AddProduct';
 import SellerHome from './pages/SellerHome';
+
+// Components
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import AuthModal from './components/modals/AuthModal';
 
 function App() {
   const { user } = useSelector((state) => state.auth);
@@ -29,7 +33,6 @@ function App() {
             path='/add-product'
             element={user ? <AddProduct /> : <NotFound />}
           />
-          <Route path='*' element={<NotFound />} />
           <Route
             path='/seller-home'
             element={
@@ -40,7 +43,9 @@ function App() {
               )
             }
           />
+          <Route path='*' element={<NotFound />} />
         </Routes>
+        <Footer />
       </Router>
       <AuthModal />
     </>
