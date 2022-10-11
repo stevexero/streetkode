@@ -3,8 +3,14 @@ import axios from 'axios';
 const API_URL = '/api/sellershop/';
 
 // REGISTER SHOP
-const registerShop = async (data) => {
-  const res = await axios.post(API_URL, data);
+const registerShop = async (shopData, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${(shopData, token)}`,
+    },
+  };
+
+  const res = await axios.post(API_URL, shopData, config);
 
   return res.data;
 };

@@ -12,9 +12,10 @@ const initialState = {
 // REGISTER SHOP
 export const registerShop = createAsyncThunk(
   'shop/register',
-  async (data, thunkAPI) => {
+  async (shopData, thunkAPI) => {
     try {
-      return await shopService.register(data);
+      const token = thunkAPI.getState().auth.user.token;
+      return await shopService.registerShop(shopData, token);
     } catch (error) {
       const message =
         (error.response &&
@@ -86,6 +87,7 @@ export const shopSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.shop = action.payload;
+        console.log(action.payload);
       })
       .addCase(registerShop.rejected, (state, action) => {
         state.isLoading = false;

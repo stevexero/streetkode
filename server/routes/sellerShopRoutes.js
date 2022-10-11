@@ -8,7 +8,7 @@ const {
 
 const { protect } = require('../middleware/authMiddleware');
 
-router.post('/', registerShop);
+router.post('/', protect, registerShop);
 
 // router.post('/welcome', sendWelcomeMail);
 

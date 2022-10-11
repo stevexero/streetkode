@@ -2,18 +2,27 @@ const asyncHandler = require('express-async-handler');
 // const nodemailer = require('nodemailer');
 // const sgMail = require('@sendgrid/mail');
 
+const User = require('../models/userModel');
 const Shop = require('../models/shopModel');
 
 // @desc    Register a shop
 // @route   /api/sellershop
 // @access  Private
 const registerShop = asyncHandler(async (req, res) => {
-  const { shopName, userId } = req.body;
+  const { shopName } = req.body;
 
   //   Validation
-  if (!shopName || !userId) {
+  if (!shopName) {
     res.status(400);
     throw new Error('Please include all fields');
+  }
+
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    res.status(401);
+
+    throw new Error('User not found');
   }
 
   //   Find if shop already exists
@@ -24,14 +33,24 @@ const registerShop = asyncHandler(async (req, res) => {
     throw new Error('Shop already exists');
   }
 
+  //   Find if user already hase a shop
+  const userId = await Shop.findOne({ user });
+
+  if (userId) {
+    res.status(400);
+    throw new Error('User already has a shop');
+  }
+
   //   Create shop
   const shop = await Shop.create({
+    user: req.user.id,
     shopName,
   });
 
   if (shop) {
     res.status(201).json({
       _id: shop._id,
+      user: shop.user,
       shopName: shop.shopName,
     });
   } else {
