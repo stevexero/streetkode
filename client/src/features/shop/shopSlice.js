@@ -1,0 +1,126 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import shopService from './shopService';
+
+const initialState = {
+  shop: {},
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  message: '',
+};
+
+// REGISTER SHOP
+export const registerShop = createAsyncThunk(
+  'shop/register',
+  async (data, thunkAPI) => {
+    try {
+      return await shopService.register(data);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// export const sendWelcomeMail = createAsyncThunk(
+//   'auth/sendWelcomeMail',
+//   async (userData, thunkAPI) => {
+//     try {
+//       return await authService.sendWelcomeMail(userData);
+//     } catch (error) {
+//       const message =
+//         (error.response &&
+//           error.response.data &&
+//           error.response.data.message) ||
+//         error.message ||
+//         error.toString();
+
+//       return thunkAPI.rejectWithValue(message);
+//     }
+//   }
+// );
+
+// GET SHOP
+export const getShop = createAsyncThunk(
+  'shop/getShop',
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await shopService.getShop(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const shopSlice = createSlice({
+  name: 'shop',
+  initialState,
+  reducers: {
+    reset: (state) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccess = false;
+      state.message = '';
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(registerShop.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(registerShop.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.shop = action.payload;
+      })
+      .addCase(registerShop.rejected, (state, action) => {
+        state.isLoading = false;
+        state.shop = null;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      //   .addCase(sendWelcomeMail.pending, (state) => {
+      //     state.isLoading = true;
+      //   })
+      //   .addCase(sendWelcomeMail.fulfilled, (state, action) => {
+      //     state.isLoading = false;
+      //     state.isSuccess = true;
+      //     console.log(action.payload);
+      //   })
+      //   .addCase(sendWelcomeMail.rejected, (state, action) => {
+      //     state.isLoading = false;
+      //     state.user = null;
+      //     state.isError = true;
+      //     state.message = action.payload;
+      //   })
+      .addCase(getShop.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getShop.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(getShop.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      });
+  },
+});
+
+export const { reset } = shopSlice.actions;
+export default shopSlice.reducer;

@@ -121,7 +121,6 @@ export const productSlice = createSlice({
       })
       .addCase(addProduct.rejected, (state, action) => {
         state.isLoading = false;
-        state.user = null;
         state.isError = true;
         state.message = action.payload;
       });
