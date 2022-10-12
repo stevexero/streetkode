@@ -48,30 +48,26 @@ export const registerShop = createAsyncThunk(
 // );
 
 // GET SHOP
-export const getShop = createAsyncThunk(
-  'shop/getShop',
-  async (data, thunkAPI) => {
-    try {
-      const token = thunkAPI.getState().auth.user.token;
-      return await shopService.getShop(data, token);
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
+export const getShop = createAsyncThunk('shop/getShop', async (_, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().auth.user.token;
+    return await shopService.getShop(token);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
 
-      return thunkAPI.rejectWithValue(message);
-    }
+    return thunkAPI.rejectWithValue(message);
   }
-);
+});
 
 export const shopSlice = createSlice({
   name: 'shop',
   initialState,
   reducers: {
-    reset: (state) => {
+    resetShop: (state) => {
+      state.shop = {};
       state.isLoading = false;
       state.isError = false;
       state.isSuccess = false;
@@ -115,6 +111,7 @@ export const shopSlice = createSlice({
       .addCase(getShop.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        state.shop = action.payload;
       })
       .addCase(getShop.rejected, (state, action) => {
         state.isLoading = false;
@@ -124,5 +121,5 @@ export const shopSlice = createSlice({
   },
 });
 
-export const { reset } = shopSlice.actions;
+export const { resetShop } = shopSlice.actions;
 export default shopSlice.reducer;

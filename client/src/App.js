@@ -22,6 +22,7 @@ import AuthModal from './components/modals/AuthModal';
 
 function App() {
   const { user } = useSelector((state) => state.auth);
+  const { shop } = useSelector((state) => state.shop);
 
   return (
     <>
@@ -41,20 +42,14 @@ function App() {
             element={user ? <AddProduct /> : <NotFound />}
           />
           <Route
-            path='/seller-home'
-            element={
-              user && user.memberType === 'seller' ? (
-                <SellerHome />
-              ) : (
-                <NotFound />
-              )
-            }
+            path='/seller-home/:id'
+            element={user && shop ? <SellerHome /> : <NotFound />}
           />
           <Route path='*' element={<NotFound />} />
         </Routes>
         <Footer />
+        <AuthModal />
       </Router>
-      <AuthModal />
     </>
   );
 }

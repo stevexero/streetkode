@@ -47,6 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
       email: user.email,
       memberType: user.memberType,
       signupFrom: user.signupFrom,
+      shop: user.shop,
       token: generateToken(user._id),
     });
   } else {
@@ -102,6 +103,7 @@ const loginUser = asyncHandler(async (req, res) => {
       email: user.email,
       memberType: user.memberType,
       signupFrom: user.signupFrom,
+      shop: user.shop,
       token: generateToken(user._id),
     });
   } else {
@@ -119,26 +121,28 @@ const getMe = asyncHandler(async (req, res) => {
     email: req.user.email,
     name: req.user.name,
     memberType: req.user.memberType,
+    shop: req.user.shop,
   };
 
   res.status(200).json(user);
 });
 
-// @desc    Upgrade user
+// @desc    Update user
 // @route   /api/users
 // @access  Private
-// const upgradeUser = asyncHandler(async (req, res) => {
-//   const { email, name, memberType } = req.body;
+const updateUser = asyncHandler(async (req, res) => {
+  const { userId, memberType, shop } = req.body;
 
-//   const user = await User.findOneAndUpdate(
-//     { email: email },
-//     {
-//       $set: { memberType: memberType },
-//     }
-//   );
+  const user = await User.findOneAndUpdate(
+    { _id: userId },
+    {
+      $set: { memberType: memberType, shop: shop },
+    },
+    { new: true }
+  );
 
-//   res.status(200).json(user);
-// });
+  res.status(200).json(user);
+});
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -151,5 +155,5 @@ module.exports = {
   loginUser,
   //   sendWelcomeMail,
   getMe,
-  //   upgradeUser,
+  updateUser,
 };

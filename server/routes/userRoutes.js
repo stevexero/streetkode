@@ -5,7 +5,7 @@ const {
   loginUser,
   //   sendWelcomeMail,
   getMe,
-  //   upgradeUser,
+  updateUser,
 } = require('../controllers/userController');
 
 const { protect } = require('../middleware/authMiddleware');
@@ -18,6 +18,6 @@ router.post('/login', loginUser);
 
 router.get('/me', protect, getMe);
 
-// router.patch('/', protect, upgradeUser);
+router.patch('/', protect, updateUser);
 
 module.exports = router;

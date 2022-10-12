@@ -23,14 +23,14 @@ const registerShop = async (shopData, token) => {
 // };
 
 // GET SHOP
-const getShop = async (data, token) => {
+const getShop = async (token) => {
   const config = {
     headers: {
-      Authorization: `Bearer ${(data, token)}`,
+      Authorization: `Bearer ${token}`,
     },
   };
 
-  const res = await axios.get(API_URL + 'getShop', data, config);
+  const res = await axios.get(API_URL + 'getShop', config);
 
   return res.data;
 };

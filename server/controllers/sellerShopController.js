@@ -95,10 +95,27 @@ const registerShop = asyncHandler(async (req, res) => {
 // @route   /api/sellershop/getShop
 // @access  Private
 const getShop = asyncHandler(async (req, res) => {
-  const shop = {
-    _id: req.shop._id,
-    shopName: req.shop.shopName,
-  };
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    res.status(401);
+
+    throw new Error('User not found');
+  }
+
+  const shop = await Shop.findById(req.user.shop);
+
+  if (!shop) {
+    res.status(404);
+
+    throw new Error('Shop not found');
+  }
+
+  if (shop.user.toString() !== req.user.id) {
+    res.status(401);
+
+    throw new Error('Not Authorized');
+  }
 
   res.status(200).json(shop);
 });

@@ -1,15 +1,18 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { RiShoppingCartLine, RiHeartLine } from 'react-icons/ri';
 
 import { logout } from '../features/auth/authSlice';
 import { openAuthModal } from '../features/modals/modalSlice';
+import { resetShop } from '../features/shop/shopSlice';
 
 const Navbar = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
+  // const { shop } = useSelector((state) => state.shop);
 
   const handleLoginClick = () => {
     dispatch(openAuthModal());
@@ -17,7 +20,9 @@ const Navbar = () => {
 
   const handleSelect = (e) => {
     if (e === 'logout') {
+      dispatch(resetShop());
       dispatch(logout());
+      navigate('/');
     }
   };
 
@@ -59,7 +64,7 @@ const Navbar = () => {
         )}
         {user && user.memberType === 'seller' && (
           <li>
-            <Link to='/seller-home'>Seller Home</Link>
+            <Link to={`/seller-home/${user.shop}`}>Seller Home</Link>
           </li>
         )}
         <li>
@@ -74,9 +79,11 @@ const Navbar = () => {
             <p>0</p>
           </button>
         </li>
-        <li>
-          <Link to='/sell-with-us'>Sell with us!</Link>
-        </li>
+        {user && user.memberType === 'seller' ? null : (
+          <li>
+            <Link to='/sell-with-us'>Sell with us!</Link>
+          </li>
+        )}
       </ul>
     </nav>
   );

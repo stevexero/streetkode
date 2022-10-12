@@ -17,14 +17,17 @@ const userSchema = mongoose.Schema(
     },
     signupFrom: {
       type: String,
-      // required: [true, 'please choose a source of sign up'],
       enum: ['email', 'google'],
     },
     memberType: {
       type: String,
-      // required: [true, 'Please select a membership type'],
       enum: ['guest', 'seller'],
       default: 'guest',
+    },
+    shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Shop',
+      default: null,
     },
   },
   {

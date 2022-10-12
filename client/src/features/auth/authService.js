@@ -49,24 +49,28 @@ const getMe = async (token) => {
   return res.data;
 };
 
-// Upgrade User
-// const upgradeUser = async (userData, token) => {
-//   const config = {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   };
+// Update User
+const updateUser = async (userData, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
 
-//   const res = await axios.patch(API_URL, userData, config);
+  const res = await axios.patch(API_URL, userData, config);
 
-//   return res.data;
-// };
+  if (res.data) {
+    localStorage.setItem('streetkodeuser', JSON.stringify(res.data));
+  }
+
+  return res.data;
+};
 
 const authService = {
   register,
   logout,
   login,
-  //   upgradeUser,
+  updateUser,
   getMe,
   //   sendWelcomeMail,
 };

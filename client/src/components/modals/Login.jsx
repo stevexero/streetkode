@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // import { gapi } from 'gapi-script';
 
 import { closeAuthModal } from '../../features/modals/modalSlice';
 import { login, reset } from '../../features/auth/authSlice';
+import { getShop } from '../../features/shop/shopSlice';
 
 // import GoogleLoginButton from './GoogleLoginButton';
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { user, isSuccess, message, isError } = useSelector(
     (state) => state.auth
@@ -18,7 +21,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
 
     const loginData = {
@@ -26,10 +29,12 @@ const Login = () => {
       password,
     };
 
-    dispatch(login(loginData));
+    await dispatch(login(loginData));
 
     setEmail('');
     setPassword('');
+
+    await dispatch(getShop());
 
     dispatch(closeAuthModal());
   };
@@ -41,6 +46,12 @@ const Login = () => {
 
     dispatch(reset());
   }, [isError, isSuccess, user, message, dispatch]);
+
+  useEffect(() => {
+    user &&
+      user.memberType === 'seller' &&
+      navigate(`/seller-home/${user.shop}`);
+  }, [user, navigate]);
 
   //   useEffect(() => {
   //     function start() {
