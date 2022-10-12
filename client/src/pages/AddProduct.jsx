@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+import Select from 'react-select';
 
 import { addProduct } from '../features/products/productSlice';
+import { getAllCategories } from '../features/categories/categorySlice';
 
 const instance = axios.create();
 
@@ -10,10 +12,25 @@ const AddProduct = () => {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
+  const { categories } = useSelector((state) => state.categories);
 
   const [productTitle, setProductTitle] = useState('');
   const [productPrice, setProductPrice] = useState(0);
   const [selectedImages, setSelectedImages] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([
+    {
+      id: '',
+      value: '',
+      label: '',
+    },
+  ]);
+  const [subCategoryOptions, setSubCategoryOptions] = useState([
+    {
+      value: '',
+      label: '',
+      parentId: '',
+    },
+  ]);
 
   // Submit form - if images, upload images, else send form
   const handleSubmit = async (e) => {
@@ -55,7 +72,6 @@ const AddProduct = () => {
   };
 
   const sendForm = async (e, images) => {
-    console.log('sending form...');
     const reqBody = {
       name: productTitle,
       price: +productPrice,
@@ -69,6 +85,129 @@ const AddProduct = () => {
     setProductPrice('');
     setSelectedImages([]);
   };
+
+  // Select category
+  const handleCategoryChange = (e) => {
+    if (e !== null) {
+      if (e.value === 'suggest-category') {
+        const tempSubCategory = [
+          { value: 'suggest-sub-category', label: 'Suggest a Sub-Category' },
+        ];
+
+        setSubCategoryOptions(tempSubCategory);
+
+        console.log('Suggest a category');
+      } else if (e.value === 'tops') {
+        const tempSubCategory = [
+          { value: 'suggest-sub-category', label: 'Suggest a Sub-Category' },
+        ];
+
+        setSubCategoryOptions(tempSubCategory);
+
+        const cats = categories.filter((cat) => cat.id === e.id);
+
+        cats[0].children.forEach((sub) => {
+          tempSubCategory.push({
+            value: sub.slug,
+            label: sub.name,
+            parentId: cats[0].id,
+          });
+        });
+
+        setSubCategoryOptions(tempSubCategory);
+      } else if (e.value === 'bottoms') {
+        const tempSubCategory = [
+          { value: 'suggest-sub-category', label: 'Suggest a Sub-Category' },
+        ];
+
+        setSubCategoryOptions(tempSubCategory);
+
+        const cats = categories.filter((cat) => cat.id === e.id);
+
+        cats[0].children.forEach((sub) => {
+          tempSubCategory.push({
+            value: sub.slug,
+            label: sub.name,
+            parentId: cats[0].id,
+          });
+        });
+
+        setSubCategoryOptions(tempSubCategory);
+      } else if (e.value === 'footwear') {
+        const tempSubCategory = [
+          { value: 'suggest-sub-category', label: 'Suggest a Sub-Category' },
+        ];
+
+        setSubCategoryOptions(tempSubCategory);
+
+        const cats = categories.filter((cat) => cat.id === e.id);
+
+        cats[0].children.forEach((sub) => {
+          tempSubCategory.push({
+            value: sub.slug,
+            label: sub.name,
+            parentId: cats[0].id,
+          });
+        });
+
+        setSubCategoryOptions(tempSubCategory);
+      } else {
+        const tempSubCategory = [
+          { value: 'suggest-sub-category', label: 'Suggest a Sub-Category' },
+        ];
+
+        setSubCategoryOptions(tempSubCategory);
+
+        console.log('null value');
+      }
+    }
+  };
+
+  // Select sub-category
+  const handleSubCategoryChange = (e) => {
+    // if (e !== null) {
+    //   if (e.value === 'suggest-category') {
+    //     console.log('Suggest a category');
+    //   } else if (e.value === 'tops') {
+    //     console.log('Tops');
+    //   } else if (e.value === 'bottoms') {
+    //     console.log('Bottoms');
+    //   } else {
+    //     console.log('null value');
+    //   }
+    // }
+    console.log(e);
+  };
+
+  useEffect(() => {
+    dispatch(getAllCategories());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const temp = [{ value: 'suggest-category', label: 'Suggest a Category' }];
+
+    categories.forEach((cat) => {
+      temp.push({
+        id: cat.id,
+        value: cat.slug,
+        label: cat.name,
+      });
+    });
+
+    setCategoryOptions(temp);
+  }, [categories]);
+
+  // useEffect(() => {
+  //   console.log(categoryOptions);
+  // }, [categoryOptions]);
+
+  // useEffect(() => {
+  //   console.log(subCategoryOptions);
+  // }, [subCategoryOptions]);
+
+  // useEffect(() => {
+  //   console.log(categories);
+  // }, [categories]);
 
   return (
     <div>
@@ -110,6 +249,39 @@ const AddProduct = () => {
           onChange={(e) =>
             setSelectedImages([...selectedImages, e.target.files[0]])
           }
+        />
+        <br />
+        {/* MAIN CATEGORIES */}
+        <label htmlFor='category'>Category</label>
+        <Select
+          className='basic-single'
+          classNamePrefix='select'
+          defaultValue={
+            categoryOptions ? categoryOptions[0] : 'loading categories...'
+          }
+          isClearable={true}
+          isSearchable={true}
+          name='category'
+          id='category'
+          options={categoryOptions}
+          onChange={handleCategoryChange}
+        />
+        {/* SUB CATEGORIES */}
+        <label htmlFor='sub-category'>Sub-category</label>
+        <Select
+          className='basic-single'
+          classNamePrefix='select'
+          defaultValue={
+            subCategoryOptions
+              ? subCategoryOptions[0]
+              : 'loading sub-categories...'
+          }
+          isClearable={true}
+          isSearchable={true}
+          name='sub-category'
+          id='sub-category'
+          options={subCategoryOptions}
+          onChange={handleSubCategoryChange}
         />
         <button type='submit'>Add Product</button>
       </form>

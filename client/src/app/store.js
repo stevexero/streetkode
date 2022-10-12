@@ -3,6 +3,7 @@ import authReducer from '../features/auth/authSlice';
 import modalReducer from '../features/modals/modalSlice';
 import productReducer from '../features/products/productSlice';
 import shopReducer from '../features/shop/shopSlice';
+import categoryReducer from '../features/categories/categorySlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     modals: modalReducer,
     products: productReducer,
     shop: shopReducer,
+    categories: categoryReducer,
   },
 });
