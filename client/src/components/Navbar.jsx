@@ -23,6 +23,8 @@ const Navbar = () => {
       dispatch(resetShop());
       dispatch(logout());
       navigate('/');
+    } else if (e === 'seller-home') {
+      navigate(`/seller-home/${user.shop}`);
     }
   };
 
@@ -51,22 +53,20 @@ const Navbar = () => {
               onChange={(e) => handleSelect(e.target.value)}
             >
               <option value='profile'>profile</option>
+              {user && user.memberType === 'seller' && (
+                <option value='seller-home'>Seller Home</option>
+              )}
               <option value='logout'>logout</option>
             </select>
           ) : (
             <button onClick={handleLoginClick}>Login</button>
           )}
         </li>
-        {user && (
-          <li>
-            <Link to='/add-product'>Add Product</Link>
-          </li>
-        )}
-        {user && user.memberType === 'seller' && (
+        {/* {user && user.memberType === 'seller' && (
           <li>
             <Link to={`/seller-home/${user.shop}`}>Seller Home</Link>
           </li>
-        )}
+        )} */}
         <li>
           <button onClick={showFavorites}>
             <RiHeartLine />

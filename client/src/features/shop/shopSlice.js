@@ -49,6 +49,7 @@ export const registerShop = createAsyncThunk(
 
 // GET SHOP
 export const getShop = createAsyncThunk('shop/getShop', async (_, thunkAPI) => {
+  console.log('get shop from slice');
   try {
     const token = thunkAPI.getState().auth.user.token;
     return await shopService.getShop(token);
