@@ -10,6 +10,7 @@ import NotFound from './pages/NotFound';
 
 // Private - Guest
 import RegisterShop from './pages/RegisterShop';
+import Profile from './pages/Profile';
 
 // Private - Seller
 import AddProduct from './pages/AddProduct';
@@ -44,6 +45,10 @@ function App() {
           <Route
             path='/seller-home/:id'
             element={user && shop ? <SellerHome /> : <NotFound />}
+          />
+          <Route
+            path='/profile/:id'
+            element={user ? <Profile /> : <NotFound />}
           />
           <Route path='*' element={<NotFound />} />
         </Routes>

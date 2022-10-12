@@ -6,26 +6,23 @@ import { RiShoppingCartLine, RiHeartLine } from 'react-icons/ri';
 import { logout } from '../features/auth/authSlice';
 import { openAuthModal } from '../features/modals/modalSlice';
 import { resetShop } from '../features/shop/shopSlice';
+import { useEffect, useState } from 'react';
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
-  // const { shop } = useSelector((state) => state.shop);
+
+  const [selectedValue, setSelectedValue] = useState('');
+  const [displayValue, setDisplayValue] = useState('');
 
   const handleLoginClick = () => {
     dispatch(openAuthModal());
   };
 
   const handleSelect = (e) => {
-    if (e === 'logout') {
-      dispatch(resetShop());
-      dispatch(logout());
-      navigate('/');
-    } else if (e === 'seller-home') {
-      navigate(`/seller-home/${user.shop}`);
-    }
+    setSelectedValue(e);
   };
 
   const showFavorites = () => {
@@ -35,6 +32,24 @@ const Navbar = () => {
   const showCart = () => {
     console.log('cart');
   };
+
+  useEffect(() => {
+    if (selectedValue === 'logout') {
+      dispatch(resetShop());
+      dispatch(logout());
+      navigate('/');
+      setDisplayValue('');
+      setSelectedValue('');
+    } else if (selectedValue === 'seller-home') {
+      navigate(`/seller-home/${user.shop}`);
+      setDisplayValue('Seller Home');
+      setSelectedValue('');
+    } else if (selectedValue === 'profile') {
+      navigate(`/profile/${user._id}`);
+      setDisplayValue('User Profile');
+      setSelectedValue('');
+    }
+  }, [dispatch, navigate, selectedValue, user]);
 
   return (
     <nav style={{ backgroundColor: 'lightgrey' }}>
@@ -50,8 +65,12 @@ const Navbar = () => {
             <select
               name='user-menu'
               id='user-menu'
+              value={selectedValue}
               onChange={(e) => handleSelect(e.target.value)}
             >
+              <option value={displayValue} defaultChecked>
+                {displayValue}
+              </option>
               <option value='profile'>profile</option>
               {user && user.memberType === 'seller' && (
                 <option value='seller-home'>Seller Home</option>
@@ -62,11 +81,6 @@ const Navbar = () => {
             <button onClick={handleLoginClick}>Login</button>
           )}
         </li>
-        {/* {user && user.memberType === 'seller' && (
-          <li>
-            <Link to={`/seller-home/${user.shop}`}>Seller Home</Link>
-          </li>
-        )} */}
         <li>
           <button onClick={showFavorites}>
             <RiHeartLine />

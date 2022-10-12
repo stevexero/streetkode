@@ -34,8 +34,6 @@ const Login = () => {
     setEmail('');
     setPassword('');
 
-    await dispatch(getShop());
-
     dispatch(closeAuthModal());
   };
 
@@ -48,10 +46,11 @@ const Login = () => {
   }, [isError, isSuccess, user, message, dispatch]);
 
   useEffect(() => {
-    user &&
-      user.memberType === 'seller' &&
+    if (user && user.memberType === 'seller') {
+      dispatch(getShop());
       navigate(`/seller-home/${user.shop}`);
-  }, [user, navigate]);
+    }
+  }, [dispatch, user, navigate]);
 
   //   useEffect(() => {
   //     function start() {
