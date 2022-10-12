@@ -29,6 +29,10 @@ const Shop = () => {
     dispatch(getAllProducts());
   }, [dispatch, isError, message]);
 
+  //   useEffect(() => {
+  //     console.log(products);
+  //   }, [products]);
+
   if (isLoading) {
     return <h1>Loading...</h1>;
   }

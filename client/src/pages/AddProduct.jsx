@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 
 import { addProduct } from '../features/products/productSlice';
@@ -8,6 +8,8 @@ const instance = axios.create();
 
 const AddProduct = () => {
   const dispatch = useDispatch();
+
+  const { user } = useSelector((state) => state.auth);
 
   const [productTitle, setProductTitle] = useState('');
   const [productPrice, setProductPrice] = useState(0);
@@ -58,6 +60,7 @@ const AddProduct = () => {
       name: productTitle,
       price: +productPrice,
       imageArray: images,
+      createdBy: user._id,
     };
 
     dispatch(addProduct(reqBody));

@@ -48,6 +48,7 @@ const addProduct = async (productInfo) => {
       product: {
         name: productInfo.name,
         price: productInfo.price,
+        meta: [{ createdBy: productInfo.createdBy }],
       },
     },
     config
@@ -68,20 +69,21 @@ const postImagesToChec = async (id, imageArray) => {
     },
   };
 
-  await imageArray.map((asset) =>
-    axios
-      .post(
-        'https://api.chec.io/v1/assets',
-        {
-          filename: asset.original_filename + '.' + asset.format,
-          file_extension: asset.format,
-          url: asset.url,
-          meta: [id],
-        },
-        config
-      )
-      .then((res) => setImagesToPost(id))
-  );
+  imageArray &&
+    (await imageArray.map((asset) =>
+      axios
+        .post(
+          'https://api.chec.io/v1/assets',
+          {
+            filename: asset.original_filename + '.' + asset.format,
+            file_extension: asset.format,
+            url: asset.url,
+            meta: [id],
+          },
+          config
+        )
+        .then((res) => setImagesToPost(id))
+    ));
 };
 
 // Save images to post
