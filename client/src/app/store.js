@@ -4,6 +4,7 @@ import modalReducer from '../features/modals/modalSlice';
 import productReducer from '../features/products/productSlice';
 import shopReducer from '../features/shop/shopSlice';
 import categoryReducer from '../features/categories/categorySlice';
+import variantsReducer from '../features/variants/variantsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     products: productReducer,
     shop: shopReducer,
     categories: categoryReducer,
+    variants: variantsReducer,
   },
 });
