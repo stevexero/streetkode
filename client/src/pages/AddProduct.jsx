@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import Select from 'react-select';
 
 import { addProduct } from '../features/products/productSlice';
 import { getAllCategories } from '../features/categories/categorySlice';
@@ -20,18 +19,36 @@ const AddProduct = () => {
   const [categoryOptions, setCategoryOptions] = useState([
     {
       id: '',
-      value: '',
+      slug: '',
       label: '',
     },
   ]);
   const [subCategoryOptions, setSubCategoryOptions] = useState([
     {
-      value: '',
+      id: '',
+      slug: '',
       label: '',
       parentId: '',
     },
   ]);
-  const [reload, setReload] = useState(true);
+  // const [categoryLabel, setCategoryLabel] = useState('');
+  // const [subCategoryLabel, setSubCategoryLabel] = useState('');
+  const [catsArray, setCatsArray] = useState([]);
+  const [subCatObj, setSubCatObj] = useState({
+    id: '',
+    slug: '',
+    name: '',
+  });
+
+  const [catObj, setCatObj] = useState({
+    id: '',
+    slug: '',
+    name: '',
+  });
+
+  useEffect(() => {
+    setCatsArray([catObj, subCatObj]);
+  }, [catObj, subCatObj]);
 
   // Submit form - if images, upload images, else send form
   const handleSubmit = async (e) => {
@@ -41,9 +58,9 @@ const AddProduct = () => {
     if (selectedImages.length > 0) {
       const imageURLS = await uploadImages(selectedImages);
 
-      sendForm(e, imageURLS);
+      sendForm(catsArray, imageURLS);
     } else {
-      sendForm(e, null);
+      sendForm(catsArray, null);
     }
   };
 
@@ -72,13 +89,16 @@ const AddProduct = () => {
     return urls;
   };
 
-  const sendForm = async (e, images) => {
+  const sendForm = async (arr, images) => {
     const reqBody = {
       name: productTitle,
       price: +productPrice,
       imageArray: images,
       createdBy: user._id,
+      categories: arr,
     };
+
+    // console.log(reqBody);
 
     dispatch(addProduct(reqBody));
 
@@ -89,64 +109,89 @@ const AddProduct = () => {
 
   // Select category
   const handleCategoryChange = (e) => {
-    setReload(false); // hack
+    // console.log(e.target.value);
+    const index = e.target.selectedIndex;
+    const catElement = e.target.childNodes[index];
+    const catId = catElement.getAttribute('id');
+    const catSlug = catElement.getAttribute('value');
+    const catName = catElement.getAttribute('name');
+
     if (e !== null) {
-      if (e.value === 'suggest-category') {
+      setCatObj({ id: catId, name: catName, slug: catSlug });
+
+      if (e.target.value === 'suggest-category') {
         const tempSubCategory = [
-          { value: 'suggest-sub-category', label: 'Suggest a Sub-Category' },
+          {
+            id: null,
+            slug: 'suggest-sub-category',
+            label: 'Suggest a Sub-Category',
+          },
+        ];
+
+        setSubCategoryOptions(tempSubCategory);
+      } else if (e.target.value === 'tops') {
+        const tempSubCategory = [
+          {
+            id: null,
+            slug: 'suggest-sub-category',
+            label: 'Suggest a Sub-Category',
+          },
         ];
 
         setSubCategoryOptions(tempSubCategory);
 
-        console.log('Suggest a category');
-      } else if (e.value === 'tops') {
-        const tempSubCategory = [
-          { value: 'suggest-sub-category', label: 'Suggest a Sub-Category' },
-        ];
-
-        setSubCategoryOptions(tempSubCategory);
-
-        const cats = categories.filter((cat) => cat.id === e.id);
+        const cats = categories.filter((cat) => cat.id === catId);
 
         cats[0].children.forEach((sub) => {
-          tempSubCategory.push({
-            value: sub.slug,
+          tempSubCategory.unshift({
+            id: sub.id,
+            slug: sub.slug,
             label: sub.name,
             parentId: cats[0].id,
           });
         });
 
         setSubCategoryOptions(tempSubCategory);
-      } else if (e.value === 'bottoms') {
+      } else if (e.target.value === 'bottoms') {
         const tempSubCategory = [
-          { value: 'suggest-sub-category', label: 'Suggest a Sub-Category' },
+          {
+            id: null,
+            slug: 'suggest-sub-category',
+            label: 'Suggest a Sub-Category',
+          },
         ];
 
         setSubCategoryOptions(tempSubCategory);
 
-        const cats = categories.filter((cat) => cat.id === e.id);
+        const cats = categories.filter((cat) => cat.id === catId);
 
         cats[0].children.forEach((sub) => {
-          tempSubCategory.push({
-            value: sub.slug,
+          tempSubCategory.unshift({
+            id: sub.id,
+            slug: sub.slug,
             label: sub.name,
             parentId: cats[0].id,
           });
         });
 
         setSubCategoryOptions(tempSubCategory);
-      } else if (e.value === 'footwear') {
+      } else if (e.target.value === 'footwear') {
         const tempSubCategory = [
-          { value: 'suggest-sub-category', label: 'Suggest a Sub-Category' },
+          {
+            id: null,
+            slug: 'suggest-sub-category',
+            label: 'Suggest a Sub-Category',
+          },
         ];
 
         setSubCategoryOptions(tempSubCategory);
 
-        const cats = categories.filter((cat) => cat.id === e.id);
+        const cats = categories.filter((cat) => cat.id === catId);
 
         cats[0].children.forEach((sub) => {
-          tempSubCategory.push({
-            value: sub.slug,
+          tempSubCategory.unshift({
+            id: sub.id,
+            slug: sub.slug,
             label: sub.name,
             parentId: cats[0].id,
           });
@@ -155,7 +200,11 @@ const AddProduct = () => {
         setSubCategoryOptions(tempSubCategory);
       } else {
         const tempSubCategory = [
-          { value: 'suggest-sub-category', label: 'Suggest a Sub-Category' },
+          {
+            id: null,
+            slug: 'suggest-sub-category',
+            label: 'Suggest a Sub-Category',
+          },
         ];
 
         setSubCategoryOptions(tempSubCategory);
@@ -167,31 +216,30 @@ const AddProduct = () => {
 
   // Select sub-category
   const handleSubCategoryChange = (e) => {
-    // if (e !== null) {
-    //   if (e.value === 'suggest-category') {
-    //     console.log('Suggest a category');
-    //   } else if (e.value === 'tops') {
-    //     console.log('Tops');
-    //   } else if (e.value === 'bottoms') {
-    //     console.log('Bottoms');
-    //   } else {
-    //     console.log('null value');
-    //   }
-    // }
-    console.log(e);
+    const index = e.target.selectedIndex;
+    const subCatElement = e.target.childNodes[index];
+    const subCatId = subCatElement.getAttribute('id');
+    const subCatSlug = subCatElement.getAttribute('value');
+    const subCatName = subCatElement.getAttribute('name');
+
+    setSubCatObj({ id: subCatId, name: subCatName, slug: subCatSlug });
   };
 
+  // GET ALL CATEGORIES
   useEffect(() => {
     dispatch(getAllCategories());
   }, [dispatch]);
 
+  // SET CATEGORY OPTIONS
   useEffect(() => {
-    const temp = [{ value: 'suggest-category', label: 'Suggest a Category' }];
+    const temp = [
+      { id: null, slug: 'suggest-category', label: 'Suggest a Category' },
+    ];
 
     categories.forEach((cat) => {
-      temp.push({
+      temp.unshift({
         id: cat.id,
-        value: cat.slug,
+        slug: cat.slug,
         label: cat.name,
       });
     });
@@ -199,12 +247,7 @@ const AddProduct = () => {
     setCategoryOptions(temp);
   }, [categories]);
 
-  useEffect(() => {
-    // Total hack to reload the select component
-    // Try to fix later by setting it in it's own component
-    setReload(true);
-  }, [reload]);
-
+  // LOG STUFF
   // useEffect(() => {
   //   console.log(categoryOptions);
   // }, [categoryOptions]);
@@ -217,10 +260,18 @@ const AddProduct = () => {
   //   console.log(categories);
   // }, [categories]);
 
+  // useEffect(() => {
+  //   console.log(catObj);
+  // }, [catObj]);
+
+  // useEffect(() => {
+  //   console.log(subCatObj);
+  // }, [subCatObj]);
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        {/* Display Images to be uploaded */}
+        {/* IMAGES TO BE UPLOADED */}
         {selectedImages && (
           <div>
             {selectedImages.map((image) => (
@@ -234,13 +285,13 @@ const AddProduct = () => {
             ))}
           </div>
         )}
-        {/* Title */}
+        {/* TITLE */}
         <input
           type='text'
           value={productTitle}
           onChange={(e) => setProductTitle(e.target.value)}
         />
-        {/* Price */}
+        {/* PRICE */}
         <input
           type='number'
           min='1'
@@ -248,7 +299,7 @@ const AddProduct = () => {
           value={productPrice}
           onChange={(e) => setProductPrice(e.target.value)}
         />
-        {/* Image */}
+        {/* IMAGE */}
         <input
           type='file'
           label='Image'
@@ -261,34 +312,42 @@ const AddProduct = () => {
         <br />
         {/* MAIN CATEGORIES */}
         <label htmlFor='category'>Category</label>
-        <Select
-          className='basic-single'
-          classNamePrefix='select'
-          // defaultValue={
-          //   categoryOptions ? categoryOptions[0] : 'loading categories...'
-          // }
-          isClearable={true}
-          isSearchable={true}
-          name='category'
-          id='category'
-          options={categoryOptions}
-          onChange={handleCategoryChange}
-        />
+        <select name='category' id='category' onChange={handleCategoryChange}>
+          <option id='select-category' value='select-category' defaultChecked>
+            Select Category
+          </option>
+          {categoryOptions.map((cats) => (
+            <option
+              key={cats.id}
+              id={cats.id}
+              value={cats.slug}
+              name={cats.label}
+            >
+              {cats.label}
+            </option>
+          ))}
+        </select>
         {/* SUB CATEGORIES */}
         <label htmlFor='sub-category'>Sub-category</label>
-        {reload && (
-          <Select
-            className='basic-single'
-            classNamePrefix='select'
-            defaultValue={subCategoryOptions[0]}
-            isClearable={true}
-            isSearchable={true}
-            name='sub-category'
-            id='sub-category'
-            options={subCategoryOptions}
-            onChange={handleSubCategoryChange}
-          />
-        )}
+        <select
+          name='sub-category'
+          id='sub-category'
+          onChange={handleSubCategoryChange}
+        >
+          <option value='select-sub-category' defaultChecked>
+            Select Sub-category
+          </option>
+          {subCategoryOptions.map((subCats) => (
+            <option
+              key={subCats.id}
+              id={subCats.id}
+              value={subCats.slug}
+              name={subCats.label}
+            >
+              {subCats.label}
+            </option>
+          ))}
+        </select>
         <button type='submit'>Add Product</button>
       </form>
     </div>

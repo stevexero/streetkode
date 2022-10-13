@@ -55,6 +55,7 @@ const addProduct = async (productInfo) => {
   );
 
   postImagesToChec(res.data.id, productInfo.imageArray);
+  postCategoriesToChec(res.data.id, productInfo.categories);
 
   return res.data;
 };
@@ -117,6 +118,25 @@ const setImagesToPost = async (productId) => {
     `https://api.chec.io/v1/products/${productId}/assets`,
     {
       assets: temp,
+    },
+    config
+  );
+};
+
+// Save categories to post
+const postCategoriesToChec = async (productId, catArray) => {
+  const config = {
+    headers: {
+      'X-Authorization': process.env.REACT_APP_COMMERCE_API_KEY_TEST,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  };
+
+  await axios.put(
+    `https://api.chec.io/v1/products/${productId}`,
+    {
+      categories: catArray,
     },
     config
   );

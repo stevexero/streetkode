@@ -49,6 +49,7 @@ export const categorySlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.categories = action.payload;
+        // console.log(action.payload);
       })
       .addCase(getAllCategories.rejected, (state, action) => {
         state.isLoading = false;
