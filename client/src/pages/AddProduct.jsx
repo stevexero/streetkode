@@ -31,6 +31,7 @@ const AddProduct = () => {
       parentId: '',
     },
   ]);
+  const [reload, setReload] = useState(true);
 
   // Submit form - if images, upload images, else send form
   const handleSubmit = async (e) => {
@@ -88,6 +89,7 @@ const AddProduct = () => {
 
   // Select category
   const handleCategoryChange = (e) => {
+    setReload(false); // hack
     if (e !== null) {
       if (e.value === 'suggest-category') {
         const tempSubCategory = [
@@ -197,6 +199,12 @@ const AddProduct = () => {
     setCategoryOptions(temp);
   }, [categories]);
 
+  useEffect(() => {
+    // Total hack to reload the select component
+    // Try to fix later by setting it in it's own component
+    setReload(true);
+  }, [reload]);
+
   // useEffect(() => {
   //   console.log(categoryOptions);
   // }, [categoryOptions]);
@@ -256,9 +264,9 @@ const AddProduct = () => {
         <Select
           className='basic-single'
           classNamePrefix='select'
-          defaultValue={
-            categoryOptions ? categoryOptions[0] : 'loading categories...'
-          }
+          // defaultValue={
+          //   categoryOptions ? categoryOptions[0] : 'loading categories...'
+          // }
           isClearable={true}
           isSearchable={true}
           name='category'
@@ -268,21 +276,19 @@ const AddProduct = () => {
         />
         {/* SUB CATEGORIES */}
         <label htmlFor='sub-category'>Sub-category</label>
-        <Select
-          className='basic-single'
-          classNamePrefix='select'
-          defaultValue={
-            subCategoryOptions
-              ? subCategoryOptions[0]
-              : 'loading sub-categories...'
-          }
-          isClearable={true}
-          isSearchable={true}
-          name='sub-category'
-          id='sub-category'
-          options={subCategoryOptions}
-          onChange={handleSubCategoryChange}
-        />
+        {reload && (
+          <Select
+            className='basic-single'
+            classNamePrefix='select'
+            defaultValue={subCategoryOptions[0]}
+            isClearable={true}
+            isSearchable={true}
+            name='sub-category'
+            id='sub-category'
+            options={subCategoryOptions}
+            onChange={handleSubCategoryChange}
+          />
+        )}
         <button type='submit'>Add Product</button>
       </form>
     </div>
