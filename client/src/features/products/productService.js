@@ -56,6 +56,7 @@ const addProduct = async (productInfo) => {
 
   postImagesToChec(res.data.id, productInfo.imageArray);
   postCategoriesToChec(res.data.id, productInfo.categories);
+  postVariantGroupsToChec(res.data.id, productInfo.variants);
 
   return res.data;
 };
@@ -140,6 +141,26 @@ const postCategoriesToChec = async (productId, catArray) => {
     },
     config
   );
+};
+
+// Post variant groups with options array to product
+const postVariantGroupsToChec = async (productId, varGroupsArray) => {
+  const config = {
+    headers: {
+      'Access-Control-Allow-Origin': 'http://localhost:3000',
+      'X-Authorization': process.env.REACT_APP_COMMERCE_API_KEY_TEST,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  };
+
+  await varGroupsArray.forEach((arr) => {
+    axios.post(
+      `https://api.chec.io/v1/products/${productId}/variant_groups`,
+      arr,
+      config
+    );
+  });
 };
 
 const productService = {

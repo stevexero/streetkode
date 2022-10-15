@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { addProduct } from '../features/products/productSlice';
 import { getAllCategories } from '../features/categories/categorySlice';
+import { setVariantGroups } from '../features/variants/variantsSlice';
 
 import VariantOptionsForm from '../components/VariantOptionsForm';
 
@@ -14,7 +15,9 @@ const AddProduct = () => {
 
   const { user } = useSelector((state) => state.auth);
   const { categories } = useSelector((state) => state.categories);
-  const { variantOptions } = useSelector((state) => state.variants);
+  const { variantGroups, variantOptions } = useSelector(
+    (state) => state.variants
+  );
 
   const [productTitle, setProductTitle] = useState('');
   const [productPrice, setProductPrice] = useState(0);
@@ -47,7 +50,6 @@ const AddProduct = () => {
     name: '',
   });
   const [isVariantsChecked, setIsVariantsChecked] = useState(false);
-  const [variantGroups, setVariantGroups] = useState([]);
   const [variantGroupName, setVariantGroupName] = useState('');
 
   useEffect(() => {
@@ -94,15 +96,29 @@ const AddProduct = () => {
   };
 
   const sendForm = async (arr, images) => {
+    const tempArr = [];
+
+    variantGroups.forEach((vGrp) => {
+      const tempOpts = [];
+      variantOptions
+        .filter((vOpt) => vOpt.parentName === vGrp.name)
+        .forEach((vOpt) => {
+          tempOpts.push({ name: vOpt.name });
+        });
+      tempArr.push({
+        name: vGrp.name,
+        options: tempOpts,
+      });
+    });
+
     const reqBody = {
       name: productTitle,
       price: +productPrice,
       imageArray: images,
       createdBy: user._id,
       categories: arr,
+      variants: tempArr,
     };
-
-    // console.log(reqBody);
 
     dispatch(addProduct(reqBody));
 
@@ -113,7 +129,6 @@ const AddProduct = () => {
 
   // Select category
   const handleCategoryChange = (e) => {
-    // console.log(e.target.value);
     const index = e.target.selectedIndex;
     const catElement = e.target.childNodes[index];
     const catId = catElement.getAttribute('id');
@@ -259,67 +274,10 @@ const AddProduct = () => {
       name: variantGroupName,
     };
 
-    setVariantGroups([...variantGroups, variantGroupData]);
+    dispatch(setVariantGroups(variantGroupData));
 
     setVariantGroupName('');
   };
-
-  // const handleVariantOptionsSubmit = (e, vOptParent) => {
-  //   e.preventDefault();
-
-  //   setVariantOptionParent(vOptParent);
-
-  //   const variantOptionData = {
-  //     parentName: vOptParent,
-  //     name: variantOptionName,
-  //   };
-
-  //   setVariantOptions([...variantOptions, variantOptionData]);
-  // };
-
-  // const handleVariantOptionsInput = (e, vGroupName) => {
-  //   // console.log(variantOptionParent); // logs the most previously submitted
-  //   const name = `variant-option-${vGroupName}`;
-  //   // console.log(vGroupName);
-  //   // console.log(e.target.id);
-  //   console.log(name);
-  //   if (name === e.target.id) {
-  //     setVariantOptionName(e.target.value);
-  //   }
-  // };
-
-  // LOG STUFF
-  // useEffect(() => {
-  //   console.log(categoryOptions);
-  // }, [categoryOptions]);
-
-  // useEffect(() => {
-  //   console.log(subCategoryOptions);
-  // }, [subCategoryOptions]);
-
-  // useEffect(() => {
-  //   console.log(categories);
-  // }, [categories]);
-
-  // useEffect(() => {
-  //   console.log(catObj);
-  // }, [catObj]);
-
-  // useEffect(() => {
-  //   console.log(subCatObj);
-  // }, [subCatObj]);
-
-  // useEffect(() => {
-  //   console.log(isVariantsChecked);
-  // }, [isVariantsChecked]);
-
-  // useEffect(() => {
-  //   console.log(variantGroups);
-  // }, [variantGroups]);
-
-  useEffect(() => {
-    console.log(variantOptions);
-  }, [variantOptions]);
 
   return (
     <div>
@@ -452,24 +410,7 @@ const AddProduct = () => {
                     <h1>{vOpt.name}</h1>
                   </div>
                 ))}
-            {
-              // <form
-              //   onSubmit={(e) => handleVariantOptionsSubmit(e, vGroup.name)}
-              // >
-              //   <h1>{vGroup.name}</h1>
-              //   <label htmlFor={`variant-option-${vGroup.name}`}>
-              //     Variant Option
-              //   </label>
-              //   <input
-              //     type='text'
-              //     id={`variant-option-${vGroup.name}`}
-              //     value={variantOptionName}
-              //     onChange={(e) => handleVariantOptionsInput(e, vGroup.name)}
-              //   />
-              //   <button type='submit'>Add Option</button>
-              // </form>
-              <VariantOptionsForm vGroup={vGroup} />
-            }
+            {<VariantOptionsForm vGroup={vGroup} />}
           </div>
         ))}
       <br />
