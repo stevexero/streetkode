@@ -44,8 +44,22 @@ const ProductPage = () => {
       {Object.keys(product).length > 0 ? (
         <>
           <h1>{product.name}</h1>
-          <img src={product.image.url} alt={product.name} />
+          <p>By "Put shop name here"</p>
+          <img src={product.image.url} alt={product.name} width='150px' />
           <h2>{product.price.formatted_with_symbol}</h2>
+          <div dangerouslySetInnerHTML={{ __html: product.description }}></div>
+          {product.variant_groups.length > 0 &&
+            product.variant_groups.map((pVar) => (
+              <div key={pVar.id}>
+                <h1>{pVar.name}:</h1>
+                {pVar.options.map((opts) => (
+                  <div key={opts.id}>
+                    <button>{opts.name}</button>
+                  </div>
+                ))}
+              </div>
+            ))}
+          <button>Add to cart</button>
         </>
       ) : (
         <h3>Loading...</h3>

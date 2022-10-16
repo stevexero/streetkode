@@ -7,6 +7,7 @@ import { getAllCategories } from '../features/categories/categorySlice';
 import { setVariantGroups } from '../features/variants/variantsSlice';
 
 import VariantOptionsForm from '../components/VariantOptionsForm';
+import ProductDescriptionEditor from '../components/ProdectDescriptionEditor';
 
 const instance = axios.create();
 
@@ -17,6 +18,9 @@ const AddProduct = () => {
   const { categories } = useSelector((state) => state.categories);
   const { variantGroups, variantOptions } = useSelector(
     (state) => state.variants
+  );
+  const { productDescriptionHTML } = useSelector(
+    (state) => state.productDescription
   );
 
   const [productTitle, setProductTitle] = useState('');
@@ -116,6 +120,7 @@ const AddProduct = () => {
       price: +productPrice,
       imageArray: images,
       createdBy: user._id,
+      description: productDescriptionHTML,
       categories: arr,
       variants: tempArr,
     };
@@ -279,6 +284,10 @@ const AddProduct = () => {
     setVariantGroupName('');
   };
 
+  useEffect(() => {
+    console.log(productDescriptionHTML);
+  }, [productDescriptionHTML]);
+
   return (
     <div>
       <form>
@@ -414,6 +423,8 @@ const AddProduct = () => {
           </div>
         ))}
       <br />
+      {/* PRODUCT DESCRIPTION */}
+      <ProductDescriptionEditor />
       <button type='submit' onClick={handleSubmit}>
         Add Product
       </button>

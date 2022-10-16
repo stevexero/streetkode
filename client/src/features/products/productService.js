@@ -48,6 +48,7 @@ const addProduct = async (productInfo) => {
       product: {
         name: productInfo.name,
         price: productInfo.price,
+        description: productInfo.description,
         meta: [{ createdBy: productInfo.createdBy }],
       },
     },
