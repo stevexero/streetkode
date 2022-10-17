@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 
 import { getProduct, reset } from '../features/products/productSlice';
+import { createCart } from '../features/cart/cartSlice';
 
 const ProductPage = () => {
   const dispatch = useDispatch();
@@ -12,6 +13,16 @@ const ProductPage = () => {
   const { product, isSuccess, isLoading, isError, message } = useSelector(
     (state) => state.products
   );
+  const { cart } = useSelector((state) => state.cart);
+
+  const handleAddToCart = (e) => {
+    if (Object.keys(cart).length > 0) {
+      console.log('add item to cart');
+    } else {
+      dispatch(createCart());
+      console.log('created cart and add item to cart');
+    }
+  };
 
   useEffect(() => {
     return () => {
@@ -29,6 +40,10 @@ const ProductPage = () => {
 
     dispatch(getProduct(productId));
   }, [dispatch, isError, message, productId]);
+
+  useEffect(() => {
+    console.log(cart);
+  }, [cart]);
 
   if (isLoading) {
     return <h1>Loading...</h1>;
@@ -59,7 +74,7 @@ const ProductPage = () => {
                 ))}
               </div>
             ))}
-          <button>Add to cart</button>
+          <button onClick={handleAddToCart}>Add to cart</button>
         </>
       ) : (
         <h3>Loading...</h3>
