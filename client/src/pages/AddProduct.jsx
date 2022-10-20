@@ -99,7 +99,9 @@ const AddProduct = () => {
     return urls;
   };
 
+  // SEND PRODUCT INFO TO API
   const sendForm = async (arr, images) => {
+    // CREATE VARIANT GROUPS AND OPTIONS
     const tempArr = [];
 
     variantGroups.forEach((vGrp) => {
@@ -283,10 +285,6 @@ const AddProduct = () => {
 
     setVariantGroupName('');
   };
-
-  useEffect(() => {
-    console.log(productDescriptionHTML);
-  }, [productDescriptionHTML]);
 
   return (
     <div>

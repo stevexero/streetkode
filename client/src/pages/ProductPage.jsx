@@ -6,6 +6,8 @@ import BackButton from '../components/BackButton';
 import { getProduct, reset } from '../features/products/productSlice';
 import { createCart } from '../features/cart/cartSlice';
 
+import PlaceholderImage from '../assets/placeholder_img.jpeg';
+
 const ProductPage = () => {
   const dispatch = useDispatch();
   const { productId } = useParams();
@@ -41,9 +43,13 @@ const ProductPage = () => {
     dispatch(getProduct(productId));
   }, [dispatch, isError, message, productId]);
 
-  useEffect(() => {
-    console.log(cart);
-  }, [cart]);
+  // useEffect(() => {
+  //   console.log(cart);
+  // }, [cart]);
+
+  // useEffect(() => {
+  //   console.log(product);
+  // }, [product]);
 
   if (isLoading) {
     return <h1>Loading...</h1>;
@@ -60,7 +66,11 @@ const ProductPage = () => {
         <>
           <h1>{product.name}</h1>
           <p>By "Put shop name here"</p>
-          <img src={product.image.url} alt={product.name} width='150px' />
+          {product.image ? (
+            <img src={product.image.url} alt={product.name} width='150px' />
+          ) : (
+            <img src={PlaceholderImage} alt='placeholder' width='150px' />
+          )}
           <h2>{product.price.formatted_with_symbol}</h2>
           <div dangerouslySetInnerHTML={{ __html: product.description }}></div>
           {product.variant_groups.length > 0 &&

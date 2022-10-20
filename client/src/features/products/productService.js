@@ -155,10 +155,59 @@ const postVariantGroupsToChec = async (productId, varGroupsArray) => {
     },
   };
 
-  await varGroupsArray.forEach((arr) => {
+  //   await varGroupsArray.forEach((arr) => {
+  //     axios.post(
+  //       `https://api.chec.io/v1/products/${productId}/variant_groups`,
+  //       arr,
+  //       config
+  //     );
+  //   });
+
+  await varGroupsArray.map((arr) =>
     axios.post(
       `https://api.chec.io/v1/products/${productId}/variant_groups`,
       arr,
+      config
+    )
+  );
+
+  if (varGroupsArray.length > 1) {
+    await postVariantsToChec(productId);
+  }
+};
+
+// Generate variants
+const postVariantsToChec = async (productId) => {
+  const config = {
+    headers: {
+      'X-Authorization': process.env.REACT_APP_COMMERCE_API_KEY_TEST,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  };
+
+  // Get product info
+  const res = await axios.get(API_URL + productId, config);
+
+  const varArray = [];
+
+  const numOptions1 = res.data.variant_groups[0].options.length;
+  const numOptions2 = res.data.variant_groups[1].options.length;
+
+  for (let opt1x = 0; opt1x < numOptions1; opt1x++) {
+    for (let opt2x = 0; opt2x < numOptions2; opt2x++) {
+      let opt1 = res.data.variant_groups[0].options[opt1x].id;
+      let opt2 = res.data.variant_groups[1].options[opt2x].id;
+      varArray.push([opt1, opt2]);
+    }
+  }
+
+  //   console.log(varArray);
+
+  await varArray.forEach((variant) => {
+    axios.post(
+      `https://api.chec.io/v1/products/${productId}/variants`,
+      { options: variant },
       config
     );
   });
