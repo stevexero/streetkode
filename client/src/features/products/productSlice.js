@@ -4,6 +4,7 @@ import productService from './productService';
 const initialState = {
   products: [],
   product: {},
+  productVariants: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -70,6 +71,26 @@ export const addProduct = createAsyncThunk(
   }
 );
 
+// GET PRODUCT VARIANT
+// PUBLIC
+export const getProductVariants = createAsyncThunk(
+  'products/get-product-variants',
+  async (productId, thunkAPI) => {
+    try {
+      return await productService.getProductVariants(productId);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const productSlice = createSlice({
   name: 'products',
   initialState,
@@ -120,6 +141,20 @@ export const productSlice = createSlice({
         console.log(action.payload);
       })
       .addCase(addProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(getProductVariants.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getProductVariants.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.productVariants = action.payload;
+        // console.log(action.payload);
+      })
+      .addCase(getProductVariants.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

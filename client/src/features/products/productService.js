@@ -32,6 +32,24 @@ const getProduct = async (productId) => {
   return res.data;
 };
 
+// GET PRODUCT VARIANTS
+const getProductVariants = async (productId) => {
+  const config = {
+    headers: {
+      'X-Authorization': process.env.REACT_APP_COMMERCE_API_KEY_TEST,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const res = await axios.get(
+    `https://api.chec.io/v1/products/${productId}/variants`,
+    config
+  );
+
+  return res.data.data;
+};
+
 // ADD PRODUCT
 const addProduct = async (productInfo) => {
   const config = {
@@ -217,6 +235,7 @@ const productService = {
   getAllProducts,
   getProduct,
   addProduct,
+  getProductVariants,
 };
 
 export default productService;

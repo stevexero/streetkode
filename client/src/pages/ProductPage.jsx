@@ -1,9 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 
-import { getProduct, reset } from '../features/products/productSlice';
+import {
+  getProduct,
+  getProductVariants,
+  reset,
+} from '../features/products/productSlice';
 import { createCart } from '../features/cart/cartSlice';
 
 import PlaceholderImage from '../assets/placeholder_img.jpeg';
@@ -12,18 +16,71 @@ const ProductPage = () => {
   const dispatch = useDispatch();
   const { productId } = useParams();
 
-  const { product, isSuccess, isLoading, isError, message } = useSelector(
-    (state) => state.products
-  );
+  const { product, productVariants, isSuccess, isLoading, isError, message } =
+    useSelector((state) => state.products);
   const { cart } = useSelector((state) => state.cart);
 
-  const handleAddToCart = (e) => {
-    if (Object.keys(cart).length > 0) {
-      console.log('add item to cart');
+  const [selectedOption, setSelectedOption] = useState([]);
+
+  const addItemToCart = (cartId) => {
+    console.log('added item to cart');
+
+    let productToCartDetails = {};
+
+    if (selectedOption.length > 1) {
+      dispatch(getProductVariants(productId));
+
+      productVariants.map((variants) =>
+        console.log(Object.values(variants.options))
+      );
+      console.log(selectedOption);
+
+      productToCartDetails = {
+        cartId: cartId,
+        productId: productId,
+        variant_id: productVariants.id,
+      };
     } else {
-      dispatch(createCart());
-      console.log('created cart and add item to cart');
+      const obj = {
+        [selectedOption[0].parentId]: selectedOption[0].optionId,
+      };
+      productToCartDetails = {
+        cartId: cartId,
+        productId: productId,
+        options: obj,
+      };
     }
+
+    console.log(productToCartDetails);
+  };
+
+  const handleAddToCart = async (e) => {
+    if (Object.keys(cart).length > 0) {
+      addItemToCart(cart.id);
+    } else {
+      const newCart = await dispatch(createCart());
+      console.log('created cart');
+      console.log(newCart.payload.id);
+      addItemToCart(newCart.payload.id);
+    }
+  };
+
+  const handleOptionsRadioClick = (e, pVarId) => {
+    selectedOption &&
+      selectedOption.map(
+        (opt) =>
+          opt.parentId === pVarId &&
+          selectedOption.splice(selectedOption.indexOf(opt), 1)
+      );
+
+    setSelectedOption([
+      ...selectedOption,
+      {
+        parentId: pVarId,
+        optionId: e.currentTarget.id,
+        name: e.currentTarget.value,
+      },
+    ]);
   };
 
   useEffect(() => {
@@ -50,6 +107,14 @@ const ProductPage = () => {
   // useEffect(() => {
   //   console.log(product);
   // }, [product]);
+
+  // useEffect(() => {
+  //   console.log(selectedOption);
+  // }, [selectedOption]);
+
+  // useEffect(() => {
+  //   console.log(productVariants);
+  // }, [productVariants]);
 
   if (isLoading) {
     return <h1>Loading...</h1>;
@@ -79,7 +144,14 @@ const ProductPage = () => {
                 <h1>{pVar.name}:</h1>
                 {pVar.options.map((opts) => (
                   <div key={opts.id}>
-                    <button>{opts.name}</button>
+                    <input
+                      type='radio'
+                      name={pVar.id}
+                      id={opts.id}
+                      value={opts.name}
+                      onChange={(e) => handleOptionsRadioClick(e, pVar.id)}
+                    />
+                    <label htmlFor={opts.id}>{opts.name}</label>
                   </div>
                 ))}
               </div>
