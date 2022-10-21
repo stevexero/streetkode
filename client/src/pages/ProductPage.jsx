@@ -8,7 +8,7 @@ import {
   getProductVariants,
   reset,
 } from '../features/products/productSlice';
-import { createCart } from '../features/cart/cartSlice';
+import { addToCart, createCart } from '../features/cart/cartSlice';
 
 import PlaceholderImage from '../assets/placeholder_img.jpeg';
 
@@ -16,52 +16,60 @@ const ProductPage = () => {
   const dispatch = useDispatch();
   const { productId } = useParams();
 
-  const { product, productVariants, isSuccess, isLoading, isError, message } =
-    useSelector((state) => state.products);
+  const { product, isSuccess, isError, message } = useSelector(
+    (state) => state.products
+  );
   const { cart } = useSelector((state) => state.cart);
 
   const [selectedOption, setSelectedOption] = useState([]);
 
-  const addItemToCart = (cartId) => {
-    console.log('added item to cart');
-
+  const addItemToCart = async (cartId, varId) => {
     let productToCartDetails = {};
 
     if (selectedOption.length > 1) {
-      dispatch(getProductVariants(productId));
-
-      productVariants.map((variants) =>
-        console.log(Object.values(variants.options))
-      );
-      console.log(selectedOption);
-
       productToCartDetails = {
         cartId: cartId,
         productId: productId,
-        variant_id: productVariants.id,
+        variant_id: varId,
+        isFlagOptionsOrVariantId: 'flagVariantId',
       };
     } else {
-      const obj = {
-        [selectedOption[0].parentId]: selectedOption[0].optionId,
-      };
       productToCartDetails = {
         cartId: cartId,
         productId: productId,
-        options: obj,
+        options: { [selectedOption[0].parentId]: selectedOption[0].optionId },
+        isFlagOptionsOrVariantId: 'flagOptions',
       };
     }
 
-    console.log(productToCartDetails);
+    dispatch(addToCart(productToCartDetails));
+  };
+
+  const setupVariantBeforeCart = async (cartId) => {
+    if (selectedOption.length > 1) {
+      const res = await dispatch(getProductVariants(productId));
+
+      const selOptArr = [];
+      selectedOption.forEach((opt) => selOptArr.push(opt.optionId));
+
+      await res.payload.map(
+        (variants) =>
+          JSON.stringify(Object.values(variants.options)) ===
+            JSON.stringify(selOptArr) && addItemToCart(cartId, variants.id)
+      );
+    } else {
+      addItemToCart(cartId, null);
+    }
   };
 
   const handleAddToCart = async (e) => {
     if (Object.keys(cart).length > 0) {
-      addItemToCart(cart.id);
+      setupVariantBeforeCart(cart.id);
     } else {
       const newCart = await dispatch(createCart());
       console.log('created cart');
       console.log(newCart.payload.id);
-      addItemToCart(newCart.payload.id);
+      setupVariantBeforeCart(newCart.payload.id);
     }
   };
 
@@ -100,25 +108,9 @@ const ProductPage = () => {
     dispatch(getProduct(productId));
   }, [dispatch, isError, message, productId]);
 
-  // useEffect(() => {
-  //   console.log(cart);
-  // }, [cart]);
-
-  // useEffect(() => {
-  //   console.log(product);
-  // }, [product]);
-
-  // useEffect(() => {
-  //   console.log(selectedOption);
-  // }, [selectedOption]);
-
-  // useEffect(() => {
-  //   console.log(productVariants);
-  // }, [productVariants]);
-
-  if (isLoading) {
-    return <h1>Loading...</h1>;
-  }
+  // if (isLoading) {
+  //   return <h1>Loading...</h1>;
+  // }
 
   if (isError) {
     return <h3>Something went wrong</h3>;
