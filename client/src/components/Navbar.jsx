@@ -1,12 +1,12 @@
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { RiShoppingCartLine, RiHeartLine } from 'react-icons/ri';
 
 import { logout } from '../features/auth/authSlice';
-import { openAuthModal } from '../features/modals/modalSlice';
+import { openAuthModal, openCartModal } from '../features/modals/modalSlice';
 import { resetShop } from '../features/shop/shopSlice';
-import { useEffect, useState } from 'react';
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ const Navbar = () => {
   };
 
   const showCart = () => {
-    console.log('cart');
+    dispatch(openCartModal());
   };
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import Shop from './pages/Shop';
 import ProductPage from './pages/ProductPage';
 import SellWithUs from './pages/SellWithUs';
 import NotFound from './pages/NotFound';
+import Cart from './pages/Cart';
 
 // Private - Guest
 import RegisterShop from './pages/RegisterShop';
@@ -20,6 +21,7 @@ import SellerHome from './pages/SellerHome';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AuthModal from './components/modals/AuthModal';
+import CartModal from './components/modals/CartModal';
 
 function App() {
   const { user } = useSelector((state) => state.auth);
@@ -42,6 +44,7 @@ function App() {
             path='/add-product'
             element={user ? <AddProduct /> : <NotFound />}
           />
+          <Route path='/cart' element={<Cart />} />
           <Route
             path='/seller-home/:id'
             element={user && shop ? <SellerHome /> : <NotFound />}
@@ -54,6 +57,7 @@ function App() {
         </Routes>
         <Footer />
         <AuthModal />
+        <CartModal />
       </Router>
     </>
   );
