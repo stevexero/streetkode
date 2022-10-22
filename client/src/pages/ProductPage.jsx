@@ -52,10 +52,17 @@ const ProductPage = () => {
       const selOptArr = [];
       selectedOption.forEach((opt) => selOptArr.push(opt.optionId));
 
+      const selOptArrRev = [];
+      selectedOption.forEach((opt) => selOptArrRev.unshift(opt.optionId));
+
       await res.payload.map(
         (variants) =>
-          JSON.stringify(Object.values(variants.options)) ===
-            JSON.stringify(selOptArr) && addItemToCart(cartId, variants.id)
+          (JSON.stringify(Object.values(variants.options)) ===
+            JSON.stringify(selOptArr) &&
+            addItemToCart(cartId, variants.id)) ||
+          (JSON.stringify(Object.values(variants.options)) ===
+            JSON.stringify(selOptArrRev) &&
+            addItemToCart(cartId, variants.id))
       );
     } else {
       addItemToCart(cartId, null);

@@ -28,7 +28,6 @@ const VariantOptionsForm = ({ vGroup }) => {
 
   return (
     <form onSubmit={(e) => handleVariantOptionsSubmit(e, vGroup.name)}>
-      <h1>{vGroup.name}</h1>
       <label htmlFor={`variant-option-${vGroup.name}`}>
         {vGroup.name} Options
       </label>
@@ -39,6 +38,7 @@ const VariantOptionsForm = ({ vGroup }) => {
         onChange={(e) => handleVariantOptionsInput(e, vGroup.name)}
       />
       <button type='submit'>Add Option</button>
+      <h1>{vGroup.name}</h1>
     </form>
   );
 };

@@ -399,8 +399,14 @@ const AddProduct = () => {
             id='variant-group-name'
             value={variantGroupName}
             onChange={(e) => setVariantGroupName(e.target.value)}
+            disabled={variantGroups.length >= 2 ? true : false}
           />
-          <button type='submit'>Add Variant Group</button>
+          <button
+            type='submit'
+            disabled={variantGroups.length >= 2 ? true : false}
+          >
+            Add Variant Group
+          </button>
         </form>
       )}
       {/* VARIANT OPTIONS */}
@@ -408,6 +414,7 @@ const AddProduct = () => {
         variantGroups.length > 0 && // if the variants array has any elements
         variantGroups.map((vGroup) => (
           <div key={vGroup.name}>
+            {<VariantOptionsForm vGroup={vGroup} />}
             {variantOptions &&
               variantOptions.length > 0 &&
               variantOptions
@@ -417,7 +424,6 @@ const AddProduct = () => {
                     <h1>{vOpt.name}</h1>
                   </div>
                 ))}
-            {<VariantOptionsForm vGroup={vGroup} />}
           </div>
         ))}
       <br />
