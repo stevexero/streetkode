@@ -13,6 +13,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.cart);
 
   const [selectedValue, setSelectedValue] = useState('');
   const [displayValue, setDisplayValue] = useState('');
@@ -34,6 +35,10 @@ const Navbar = () => {
   };
 
   useEffect(() => {
+    console.log(cart);
+  }, [cart]);
+
+  useEffect(() => {
     if (selectedValue === 'logout') {
       dispatch(resetShop());
       dispatch(logout());
@@ -52,8 +57,18 @@ const Navbar = () => {
   }, [dispatch, navigate, selectedValue, user]);
 
   return (
-    <nav style={{ backgroundColor: 'lightgrey' }}>
-      <ul>
+    <nav
+      style={{ width: '100%', padding: '1rem', backgroundColor: 'lightgrey' }}
+    >
+      <ul
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
         <li>
           <Link to='/'>Home</Link>
         </li>
@@ -82,15 +97,15 @@ const Navbar = () => {
           )}
         </li>
         <li>
-          <button onClick={showFavorites}>
+          <button onClick={showFavorites} style={{ display: 'flex' }}>
             <RiHeartLine />
             <p>0</p>
           </button>
         </li>
         <li>
-          <button onClick={showCart}>
+          <button onClick={showCart} style={{ display: 'flex' }}>
             <RiShoppingCartLine />
-            <p>0</p>
+            <p>{cart.total_items}</p>
           </button>
         </li>
         {user && user.memberType === 'seller' ? null : (

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://api.chec.io/v1/carts';
+const API_URL = 'https://api.chec.io/v1/carts/';
 
 // CREATE CART
 const createCart = async () => {
@@ -13,6 +13,21 @@ const createCart = async () => {
   };
 
   const res = await axios.get(API_URL, config);
+
+  return res.data;
+};
+
+// GET CART
+const getCart = async (cartId) => {
+  const config = {
+    headers: {
+      'X-Authorization': process.env.REACT_APP_COMMERCE_API_KEY_TEST,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const res = await axios.get(API_URL + cartId, config);
 
   return res.data;
 };
@@ -46,6 +61,7 @@ const addToCart = async (cartData) => {
 
 const cartService = {
   createCart,
+  getCart,
   addToCart,
 };
 
