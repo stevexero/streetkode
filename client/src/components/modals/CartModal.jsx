@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
 
 import { closeCartModal } from '../../features/modals/modalSlice';
@@ -87,7 +88,9 @@ const CartModal = () => {
             </p>
             <p>Shipping & taxes calculated at checkout</p>
             <p>{cart.subtotal.formatted_with_symbol}</p>
-            <button>Checkout</button>
+            <Link to='/checkout' onClick={closeModal}>
+              Checkout
+            </Link>
             <hr />
             {cart.line_items.map((item) => (
               <div key={item.id}>
