@@ -85,11 +85,63 @@ const deleteItemFromCart = async (cartItemData) => {
   return res.data;
 };
 
+// DECREMENT ITEM QUANTITY FROM CART
+const decrementItem = async (cartItemData) => {
+  const config = {
+    headers: {
+      'X-Authorization': process.env.REACT_APP_COMMERCE_API_KEY_TEST,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const res = await axios.put(
+    `https://api.chec.io/v1/carts/${cartItemData.cartId}/items/${cartItemData.itemData.id}`,
+    {
+      quantity: cartItemData.quantity,
+    },
+    config
+  );
+
+  if (res.data) {
+    localStorage.setItem('streetkodecart', JSON.stringify(res.data));
+  }
+
+  return res.data;
+};
+
+// INCREMENT ITEM QUANTITY FROM CART
+const incrementItem = async (cartItemData) => {
+  const config = {
+    headers: {
+      'X-Authorization': process.env.REACT_APP_COMMERCE_API_KEY_TEST,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const res = await axios.put(
+    `https://api.chec.io/v1/carts/${cartItemData.cartId}/items/${cartItemData.itemData.id}`,
+    {
+      quantity: cartItemData.quantity,
+    },
+    config
+  );
+
+  if (res.data) {
+    localStorage.setItem('streetkodecart', JSON.stringify(res.data));
+  }
+
+  return res.data;
+};
+
 const cartService = {
   createCart,
   getCart,
   addToCart,
   deleteItemFromCart,
+  decrementItem,
+  incrementItem,
 };
 
 export default cartService;

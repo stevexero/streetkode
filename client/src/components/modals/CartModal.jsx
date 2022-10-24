@@ -2,7 +2,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'react-modal';
 
 import { closeCartModal } from '../../features/modals/modalSlice';
-import { deleteItemFromCart } from '../../features/cart/cartSlice';
+import {
+  decrementItem,
+  deleteItemFromCart,
+  incrementItem,
+} from '../../features/cart/cartSlice';
 
 Modal.setAppElement('#root');
 
@@ -21,6 +25,30 @@ const CartModal = () => {
     };
 
     dispatch(deleteItemFromCart(cartData));
+  };
+
+  const handleItemQuantityDecrement = (item) => {
+    if (item.quantity === 1) {
+      handleDeleteClick(item);
+    } else {
+      const cartData = {
+        cartId: cart.id,
+        itemData: item,
+        quantity: item.quantity - 1,
+      };
+
+      dispatch(decrementItem(cartData));
+    }
+  };
+
+  const handleItemQuantityIncrement = (item) => {
+    const cartData = {
+      cartId: cart.id,
+      itemData: item,
+      quantity: item.quantity + 1,
+    };
+
+    dispatch(incrementItem(cartData));
   };
 
   const closeModal = () => {
@@ -80,9 +108,13 @@ const CartModal = () => {
                     )}
                 <p>{item.price.formatted_with_symbol}</p>
                 <p>Quantity:</p>
-                <button>-</button>
+                <button onClick={() => handleItemQuantityDecrement(item)}>
+                  -
+                </button>
                 <p>{item.quantity}</p>
-                <button>+</button>
+                <button onClick={() => handleItemQuantityIncrement(item)}>
+                  +
+                </button>
                 <button onClick={() => handleDeleteClick(item)}>x</button>
               </div>
             ))}
