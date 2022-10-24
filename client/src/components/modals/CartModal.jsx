@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'react-modal';
 
 import { closeCartModal } from '../../features/modals/modalSlice';
+import { deleteItemFromCart } from '../../features/cart/cartSlice';
 
 Modal.setAppElement('#root');
 
@@ -12,6 +13,15 @@ const CartModal = () => {
     (state) => state.modals
   );
   const { cart } = useSelector((state) => state.cart);
+
+  const handleDeleteClick = (item) => {
+    const cartData = {
+      cartId: cart.id,
+      itemData: item,
+    };
+
+    dispatch(deleteItemFromCart(cartData));
+  };
 
   const closeModal = () => {
     dispatch(closeCartModal());
@@ -64,13 +74,16 @@ const CartModal = () => {
                       <p key={opt.id}>{opt.option_name}</p>
                     ))
                   : item.selected_options.length === 1 && (
-                      <p>{item.selected_options[0].option_name}</p>
+                      <p key={item.selected_options[0].id}>
+                        {item.selected_options[0].option_name}
+                      </p>
                     )}
                 <p>{item.price.formatted_with_symbol}</p>
                 <p>Quantity:</p>
                 <button>-</button>
                 <p>{item.quantity}</p>
                 <button>+</button>
+                <button onClick={() => handleDeleteClick(item)}>x</button>
               </div>
             ))}
           </>

@@ -56,6 +56,32 @@ const addToCart = async (cartData) => {
     config
   );
 
+  if (res.data) {
+    localStorage.setItem('streetkodecart', JSON.stringify(res.data));
+  }
+
+  return res.data;
+};
+
+// DELETE ITEM FROM CART
+const deleteItemFromCart = async (cartItemData) => {
+  const config = {
+    headers: {
+      'X-Authorization': process.env.REACT_APP_COMMERCE_API_KEY_TEST,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const res = await axios.delete(
+    `https://api.chec.io/v1/carts/${cartItemData.cartId}/items/${cartItemData.itemData.id}`,
+    config
+  );
+
+  if (res.data) {
+    localStorage.setItem('streetkodecart', JSON.stringify(res.data));
+  }
+
   return res.data;
 };
 
@@ -63,6 +89,7 @@ const cartService = {
   createCart,
   getCart,
   addToCart,
+  deleteItemFromCart,
 };
 
 export default cartService;
