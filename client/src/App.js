@@ -9,6 +9,7 @@ import SellWithUs from './pages/SellWithUs';
 import NotFound from './pages/NotFound';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import Shipping from './pages/Shipping';
 
 // Private - Guest
 import RegisterShop from './pages/RegisterShop';
@@ -47,6 +48,7 @@ function App() {
           />
           <Route path='/cart' element={<Cart />} />
           <Route path='/checkout' element={<Checkout />} />
+          <Route path='/shipping' element={<Shipping />} />
           <Route
             path='/seller-home/:id'
             element={user && shop ? <SellerHome /> : <NotFound />}
