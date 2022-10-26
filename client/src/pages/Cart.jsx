@@ -74,12 +74,14 @@ const Cart = () => {
                 <p>{item.name}</p>
                 {item.selected_options.length > 1
                   ? item.selected_options.map((opt) => (
-                      <p key={opt.id}>{opt.option_name}</p>
+                      <div key={opt.option_id}>
+                        <p>{opt.option_name}</p>
+                      </div>
                     ))
                   : item.selected_options.length === 1 && (
-                      <p key={item.selected_options[0].id}>
-                        {item.selected_options[0].option_name}
-                      </p>
+                      <div key={item.selected_options[0].option_id}>
+                        <p>{item.selected_options[0].option_name}</p>
+                      </div>
                     )}
                 <p>{item.price.formatted_with_symbol}</p>
                 <p>Quantity:</p>

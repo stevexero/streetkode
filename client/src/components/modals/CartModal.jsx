@@ -102,10 +102,10 @@ const CartModal = () => {
                 <p>{item.name}</p>
                 {item.selected_options.length > 1
                   ? item.selected_options.map((opt) => (
-                      <p key={opt.id}>{opt.option_name}</p>
+                      <p key={opt.option_id}>{opt.option_name}</p>
                     ))
                   : item.selected_options.length === 1 && (
-                      <p key={item.selected_options[0].id}>
+                      <p key={item.selected_options[0].option_id}>
                         {item.selected_options[0].option_name}
                       </p>
                     )}
