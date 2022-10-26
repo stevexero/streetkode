@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+
 import { generateToken } from '../features/checkout/checkoutSlice';
+
+import CheckoutItemSummary from '../components/CheckoutItemSummary';
 
 const Checkout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { cart } = useSelector((state) => state.cart);
-  const { checkout } = useSelector((state) => state.checkout);
 
   const [email, setEmail] = useState('');
   const [isEmaiMeChecked, setIsEmailMeChecked] = useState(true);
@@ -18,8 +20,9 @@ const Checkout = () => {
   const [address, setAddress] = useState('');
   const [address2, setAddress2] = useState('');
   const [city, setCity] = useState('');
+  const [state, setState] = useState('alabama');
+  const [zipCode, setZipCode] = useState('');
   const [phone, setPhone] = useState('');
-  const [discountCode, setDiscountCode] = useState('');
 
   useEffect(() => {
     dispatch(generateToken(cart.id));
@@ -36,16 +39,14 @@ const Checkout = () => {
       address,
       address2,
       city,
+      state,
+      zipCode,
       phone,
     };
 
     navigate('/shipping', { state: { contactData } });
-  };
 
-  const handleDiscountCodeSubmit = (e) => {
-    e.preventDefault();
-
-    console.log(discountCode);
+    // FIXME: Save info to session storage in order to repopulate form if user navigates back
   };
 
   return (
@@ -123,11 +124,23 @@ const Checkout = () => {
         />
         <br />
         <label htmlFor='state'>State</label>
-        <select name='state' id='state'>
+        <select
+          name='state'
+          id='state'
+          onChange={(e) => setState(e.target.value)}
+        >
           <option value='alabama'>Alabama</option>
           <option value='nevada'>Nevada</option>
           {/* FIXME: set up states or provinces depending on country chosen, and state */}
         </select>
+        <br />
+        <label htmlFor='zip'>Zip Code</label>
+        <input
+          type='text'
+          id='zip'
+          value={zipCode}
+          onChange={(e) => setZipCode(e.target.value)}
+        />
         <br />
         <label htmlFor='phone-number'>Phone Number</label>
         <input
@@ -140,51 +153,9 @@ const Checkout = () => {
         <Link to='/cart'>{'<- Back to cart'}</Link>
         <button type='submit'>Continue to shipping</button>
       </form>
-      <div>
-        {checkout &&
-          checkout.line_items &&
-          checkout.line_items.length > 0 &&
-          checkout.line_items.map((item) => (
-            <div key={item.id}>
-              <img src={item.image.url} alt={item.name} width='100px' />
-              <p>{item.name}</p>
-              {item.selected_options.length > 1
-                ? item.selected_options.map((opt) => (
-                    <p key={opt.option_id}>{opt.option_name}</p>
-                  ))
-                : item.selected_options.length === 1 && (
-                    <p key={item.selected_options[0].option_id}>
-                      {item.selected_options[0].option_name}
-                    </p>
-                  )}
-              <p>{item && item.price && item.price.formatted_with_symbol}</p>
-            </div>
-          ))}
-        <br />
-        <hr />
-        <br />
-        <form onSubmit={handleDiscountCodeSubmit}>
-          <label htmlFor='discount-code'>Discount Code</label>
-          <input
-            type='text'
-            id='discount-code'
-            value={discountCode}
-            onChange={(e) => setDiscountCode(e.target.value)}
-          />
-          <button type='submit'>Apply</button>
-        </form>
-        <br />
-        <hr />
-        <br />
-        <label htmlFor='subtotal'>Subtotal</label>
-        <p>
-          {checkout &&
-            checkout.subtotal &&
-            checkout.subtotal.formatted_with_symbol}
-        </p>
-        <label htmlFor='shipping'>Shipping</label>
-        <p>Calculated at next step</p>
-      </div>
+      <hr />
+      <hr />
+      <CheckoutItemSummary />
     </div>
   );
 };
