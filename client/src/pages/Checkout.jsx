@@ -129,8 +129,8 @@ const Checkout = () => {
           id='state'
           onChange={(e) => setState(e.target.value)}
         >
-          <option value='alabama'>Alabama</option>
-          <option value='nevada'>Nevada</option>
+          <option value='AL'>Alabama</option>
+          <option value='NV'>Nevada</option>
           {/* FIXME: set up states or provinces depending on country chosen, and state */}
         </select>
         <br />

@@ -10,6 +10,7 @@ import NotFound from './pages/NotFound';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Shipping from './pages/Shipping';
+import Payment from './pages/Payment';
 
 // Private - Guest
 import RegisterShop from './pages/RegisterShop';
@@ -49,6 +50,7 @@ function App() {
           <Route path='/cart' element={<Cart />} />
           <Route path='/checkout' element={<Checkout />} />
           <Route path='/shipping' element={<Shipping />} />
+          <Route path='/payment' element={<Payment />} />
           <Route
             path='/seller-home/:id'
             element={user && shop ? <SellerHome /> : <NotFound />}

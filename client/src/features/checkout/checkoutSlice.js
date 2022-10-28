@@ -3,6 +3,7 @@ import checkoutService from './checkoutService';
 
 const initialState = {
   checkout: {},
+  checkoutInfo: {},
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -16,6 +17,26 @@ export const generateToken = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       return await checkoutService.generateToken(id);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// CAPTURE CHECKOUT
+// PUBLIC
+export const captureCheckout = createAsyncThunk(
+  'checkout/capture-checkout',
+  async (orderData, thunkAPI) => {
+    try {
+      return await checkoutService.captureCheckout(orderData);
     } catch (error) {
       const message =
         (error.response &&
@@ -55,6 +76,21 @@ export const checkoutSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(captureCheckout.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(captureCheckout.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.checkoutInfo = action.payload;
+        console.log(action.payload);
+      })
+      .addCase(captureCheckout.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        console.log(action.payload);
       });
   },
 });

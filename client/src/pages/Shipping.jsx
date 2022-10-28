@@ -4,6 +4,7 @@ import CheckoutItemSummary from '../components/CheckoutItemSummary';
 
 const Shipping = () => {
   const location = useLocation();
+  const contactData = location.state.contactData;
 
   return (
     <div>
@@ -30,7 +31,9 @@ const Shipping = () => {
       <br />
       <Link to='/checkout'>{'<- Back to information'}</Link>
       <br />
-      <Link to='/payment'>Continue to payment</Link>
+      <Link to='/payment' state={{ contactData }}>
+        Continue to payment
+      </Link>
       <hr />
       <hr />
       <CheckoutItemSummary />
