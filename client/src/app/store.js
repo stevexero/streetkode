@@ -8,6 +8,7 @@ import variantsReducer from '../features/variants/variantsSlice';
 import productDescriptionReducer from '../features/productDescription/productDescriptionSlice';
 import cartReducer from '../features/cart/cartSlice';
 import checkoutReducer from '../features/checkout/checkoutSlice';
+import customerInputReducer from '../features/customerInputs/customerInputSlice';
 
 export const store = configureStore({
   reducer: {
@@ -20,5 +21,6 @@ export const store = configureStore({
     productDescription: productDescriptionReducer,
     cart: cartReducer,
     checkout: checkoutReducer,
+    customerInput: customerInputReducer,
   },
 });
