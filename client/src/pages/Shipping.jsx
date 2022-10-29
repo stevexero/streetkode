@@ -14,7 +14,7 @@ const Shipping = () => {
       <p id='contact-address'>
         {location.state.contactData.address},{' '}
         {location.state.contactData.address2}, {location.state.contactData.city}
-        , {location.state.contactData.state},{' '}
+        , {location.state.contactData.subdivision},{' '}
         {location.state.contactData.zipCode}
       </p>
       <h1>Shipping Method</h1>
