@@ -130,7 +130,6 @@ const PaymentForm = ({ contactData }) => {
 
   return (
     <div className='PaymentForm'>
-      {/* <Review checkoutToken={checkout} price={totalCart} /> */}
       <hr />
       <h6>Payment Method</h6>
       <Elements stripe={stripePromise}>

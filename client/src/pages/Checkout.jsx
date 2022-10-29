@@ -84,13 +84,14 @@ const Checkout = () => {
 
   //   Set initial country id
   useEffect(() => {
-    shippingCountries &&
-      shippingCountries.length > 0 &&
+    if (shippingCountries.length > 0) {
       dispatch(setCustomerCountryCode(shippingCountries[0].id));
+      dispatch(setCustomerCountryName(shippingCountries[0].countries[0]));
+    }
   }, [shippingCountries, dispatch]);
 
   useEffect(() => {
-    if (shippingCountries && shippingCountries.length > 0) {
+    if (shippingCountries.length > 0) {
       const chktCntryData = {
         checkoutId: checkout.id,
         countryCode: countryName,
@@ -123,9 +124,6 @@ const Checkout = () => {
         <br />
         <label htmlFor='country'>Country</label>
         <select name='country' id='country' onChange={handleCountryChange}>
-          <option value='select-country' id='select-country'>
-            Select Country
-          </option>
           {shippingCountries &&
             shippingCountries.map((country) => (
               <option
