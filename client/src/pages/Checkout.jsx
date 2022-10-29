@@ -82,23 +82,36 @@ const Checkout = () => {
     dispatch(getShippingCountries());
   }, [dispatch]);
 
-  //   Set initial country id
+  //   Set initial country id and subdivisions
   useEffect(() => {
-    if (shippingCountries.length > 0) {
-      dispatch(setCustomerCountryCode(shippingCountries[0].id));
-      dispatch(setCustomerCountryName(shippingCountries[0].countries[0]));
-    }
-  }, [shippingCountries, dispatch]);
+    const setCountriesAndSubdivisions = async () => {
+      if (shippingCountries.length > 0) {
+        const countries = await shippingCountries[0].id;
+        const subdivisions = await shippingCountries[0].countries[0];
 
-  useEffect(() => {
-    if (shippingCountries.length > 0) {
-      const chktCntryData = {
-        checkoutId: checkout.id,
-        countryCode: countryName,
-        zoneId: countryCode,
-      };
-      dispatch(getShippingSubdivisions(chktCntryData));
-    }
+        dispatch(setCustomerCountryCode(countries));
+        dispatch(setCustomerCountryName(subdivisions));
+
+        const checkout_id = await checkout.id;
+        const country_code = await countryName;
+        const zone_id = await countryCode;
+
+        const chktCntryData = {
+          checkoutId: checkout_id,
+          countryCode: country_code,
+          zoneId: zone_id,
+        };
+
+        if (
+          chktCntryData.checkoutId !== undefined &&
+          chktCntryData.countryCode !== '' &&
+          chktCntryData.zoneId !== ''
+        ) {
+          dispatch(getShippingSubdivisions(chktCntryData));
+        }
+      }
+    };
+    setCountriesAndSubdivisions();
   }, [dispatch, countryName, checkout, shippingCountries, countryCode]);
 
   return (
