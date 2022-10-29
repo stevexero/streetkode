@@ -2,12 +2,15 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   email: '',
+  countryName: '',
+  countryCode: '',
   firstName: '',
   lastName: '',
   company: '',
   address: '',
   address2: '',
   city: '',
+  subdivision: '',
   zipCode: '',
 };
 
@@ -17,6 +20,12 @@ export const customerInputSlice = createSlice({
   reducers: {
     setCustomerEmail: (state, action) => {
       state.email = action.payload;
+    },
+    setCustomerCountryName: (state, action) => {
+      state.countryName = action.payload;
+    },
+    setCustomerCountryCode: (state, action) => {
+      state.countryCode = action.payload;
     },
     setCustomerFirstName: (state, action) => {
       state.firstName = action.payload;
@@ -33,6 +42,9 @@ export const customerInputSlice = createSlice({
     setCustomerCity: (state, action) => {
       state.city = action.payload;
     },
+    setCustomerSubdivision: (state, action) => {
+      state.subdivision = action.payload;
+    },
     setCustomerZipCode: (state, action) => {
       state.zipCode = action.payload;
     },
@@ -41,11 +53,14 @@ export const customerInputSlice = createSlice({
 
 export const {
   setCustomerEmail,
+  setCustomerCountryName,
+  setCustomerCountryCode,
   setCustomerFirstName,
   setCustomerLastName,
   setCustomerAddress,
   setCustomerAddress2,
   setCustomerCity,
+  setCustomerSubdivision,
   setCustomerZipCode,
 } = customerInputSlice.actions;
 export default customerInputSlice.reducer;

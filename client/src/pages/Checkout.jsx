@@ -9,22 +9,52 @@ import {
   setCustomerAddress,
   setCustomerAddress2,
   setCustomerCity,
+  setCustomerCountryCode,
+  setCustomerCountryName,
   setCustomerEmail,
   setCustomerFirstName,
   setCustomerLastName,
+  setCustomerSubdivision,
   setCustomerZipCode,
 } from '../features/customerInputs/customerInputSlice';
+import {
+  getShippingCountries,
+  getShippingSubdivisions,
+} from '../features/shipping/shippingSlice';
 
 const Checkout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { cart } = useSelector((state) => state.cart);
-  const { email, firstName, lastName, address, address2, city, zipCode } =
-    useSelector((state) => state.customerInput);
+  const {
+    email,
+    countryName,
+    countryCode,
+    firstName,
+    lastName,
+    address,
+    address2,
+    city,
+    subdivision,
+    zipCode,
+  } = useSelector((state) => state.customerInput);
+  const { shippingCountries, shippingSubdivisions } = useSelector(
+    (state) => state.shipping
+  );
+  const { checkout } = useSelector((state) => state.checkout);
 
   const [isEmaiMeChecked, setIsEmailMeChecked] = useState(true);
-  const [state, setState] = useState('alabama');
+
+  const handleCountryChange = (e) => {
+    const index = e.target.selectedIndex;
+    const countryElement = e.target.childNodes[index];
+    const countryId = countryElement.getAttribute('id');
+    const countryName = countryElement.getAttribute('value');
+
+    dispatch(setCustomerCountryCode(countryId));
+    dispatch(setCustomerCountryName(countryName));
+  };
 
   useEffect(() => {
     dispatch(generateToken(cart.id));
@@ -35,17 +65,40 @@ const Checkout = () => {
 
     const contactData = {
       email,
+      countryName,
       firstName,
       lastName,
       address,
       address2,
       city,
-      state,
+      subdivision,
       zipCode,
     };
 
     navigate('/shipping', { state: { contactData } });
   };
+
+  useEffect(() => {
+    dispatch(getShippingCountries());
+  }, [dispatch]);
+
+  //   Set initial country id
+  useEffect(() => {
+    shippingCountries &&
+      shippingCountries.length > 0 &&
+      dispatch(setCustomerCountryCode(shippingCountries[0].id));
+  }, [shippingCountries, dispatch]);
+
+  useEffect(() => {
+    if (shippingCountries && shippingCountries.length > 0) {
+      const chktCntryData = {
+        checkoutId: checkout.id,
+        countryCode: countryName,
+        zoneId: countryCode,
+      };
+      dispatch(getShippingSubdivisions(chktCntryData));
+    }
+  }, [dispatch, countryName, checkout, shippingCountries, countryCode]);
 
   return (
     <div>
@@ -69,9 +122,20 @@ const Checkout = () => {
         />
         <br />
         <label htmlFor='country'>Country</label>
-        <select name='country' id='country'>
-          <option value='US'>USA</option>
-          {/* FIXME: work out country list and state */}
+        <select name='country' id='country' onChange={handleCountryChange}>
+          <option value='select-country' id='select-country'>
+            Select Country
+          </option>
+          {shippingCountries &&
+            shippingCountries.map((country) => (
+              <option
+                key={country.id}
+                id={country.id}
+                value={country.countries[0]}
+              >
+                {country.name}
+              </option>
+            ))}
         </select>
         <br />
         <label htmlFor='first-name'>First Name</label>
@@ -113,15 +177,19 @@ const Checkout = () => {
           onChange={(e) => dispatch(setCustomerCity(e.target.value))}
         />
         <br />
-        <label htmlFor='state'>State</label>
+        <label htmlFor='state'>State / Subdivision</label>
         <select
           name='state'
           id='state'
-          onChange={(e) => setState(e.target.value)}
+          onChange={(e) => dispatch(setCustomerSubdivision(e.target.value))}
         >
-          <option value='AL'>Alabama</option>
-          <option value='NV'>Nevada</option>
-          {/* FIXME: set up states or provinces depending on country chosen, and state */}
+          {Object.entries(shippingSubdivisions).map(
+            ([subCode, subName], index) => (
+              <option key={index} id={subCode} value={subCode}>
+                {subName}
+              </option>
+            )
+          )}
         </select>
         <br />
         <label htmlFor='zip'>Zip Code</label>

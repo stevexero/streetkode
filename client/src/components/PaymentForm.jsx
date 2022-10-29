@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -8,6 +8,10 @@ import {
 } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { captureCheckout } from '../features/checkout/checkoutSlice';
+// import {
+//   getShippingCountries,
+//   getShippingOptions,
+// } from '../features/shipping/shippingSlice';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 
@@ -36,6 +40,28 @@ const PaymentForm = ({ contactData }) => {
   const { checkout } = useSelector((state) => state.checkout);
 
   const [totalCart] = useState(null);
+  //   const [shippingOptions, setShippingOptions] = useState([]);
+  //   const [shippingOption, setShippingOption] = useState();
+
+  //   const options = shippingOptions.map((sO) => ({
+  //     id: sO.id,
+  //     label: `${sO.description} - (${sO.price.formatted_with_symbol})`,
+  //   }));
+
+  //   const fetchShippingOptions = async (checkoutId, country, region = null) => {
+  //     const options = await dispatch(
+  //       getShippingOptions(checkout.id, { country, region })
+  //     );
+
+  //     setShippingOptions(options);
+  //     setShippingOption(options[0].id);
+  //   };
+
+  // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    console.log(contactData);
+  }, [contactData]);
 
   const handleSubmit = async (event, elements, stripe) => {
     event.preventDefault();
@@ -62,21 +88,22 @@ const PaymentForm = ({ contactData }) => {
         },
         shipping: {
           name: 'Primary',
-          street: contactData.address,
+          street: contactData.address + ' ' + contactData.address2,
           town_city: contactData.city,
-          county_state: contactData.state,
+          county_state: contactData.subdivision,
           postal_zip_code: contactData.zipCode,
-          country: 'US',
+          country: contactData.countryName,
         },
         billing: {
           name: 'Primary',
-          street: contactData.address,
+          street: contactData.address + ' ' + contactData.address2,
           town_city: contactData.city,
-          county_state: contactData.state,
+          county_state: contactData.subdivision,
           postal_zip_code: contactData.zipCode,
-          country: 'United States',
+          country: contactData.countryName,
         },
-        fulfillment: { shipping_method: 'free' },
+        // fulfillment: { shipping_method: 'free' },
+        // FIXME: work on fulfillment zones when shipping to multiple countries
         payment: {
           gateway: 'stripe',
           stripe: {
@@ -87,6 +114,8 @@ const PaymentForm = ({ contactData }) => {
 
       //   Capture checkout
       dispatch(captureCheckout(orderData));
+
+      localStorage.removeItem('streetkodecart');
 
       //  FIXME: navigate to thank you page and empty cart
     }
