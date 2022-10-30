@@ -105,7 +105,7 @@ export const shippingSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.shippingSubdivisions = action.payload;
-        console.log(action.payload);
+        // console.log(action.payload);
       })
       .addCase(getShippingSubdivisions.rejected, (state, action) => {
         state.isLoading = false;
@@ -119,7 +119,7 @@ export const shippingSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.shipping = action.payload;
-        console.log(action.payload);
+        // console.log(action.payload);
       })
       .addCase(getShippingOptions.rejected, (state, action) => {
         state.isLoading = false;

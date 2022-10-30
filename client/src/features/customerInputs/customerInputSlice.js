@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+  isFirstLoad: true,
   email: '',
   countryName: '',
   countryCode: '',
@@ -18,6 +19,9 @@ export const customerInputSlice = createSlice({
   name: 'customerInputs',
   initialState,
   reducers: {
+    setIsFirstLoad: (state, action) => {
+      state.isFirstLoad = action.payload;
+    },
     setCustomerEmail: (state, action) => {
       state.email = action.payload;
     },
@@ -52,6 +56,7 @@ export const customerInputSlice = createSlice({
 });
 
 export const {
+  setIsFirstLoad,
   setCustomerEmail,
   setCustomerCountryName,
   setCustomerCountryCode,

@@ -70,7 +70,7 @@ export const checkoutSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.checkout = action.payload;
-        console.log(action.payload);
+        // console.log(action.payload);
       })
       .addCase(generateToken.rejected, (state, action) => {
         state.isLoading = false;
@@ -84,13 +84,13 @@ export const checkoutSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.checkoutInfo = action.payload;
-        console.log(action.payload);
+        // console.log(action.payload);
       })
       .addCase(captureCheckout.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
-        console.log(action.payload);
+        // console.log(action.payload);
       });
   },
 });

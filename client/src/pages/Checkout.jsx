@@ -6,6 +6,7 @@ import { generateToken } from '../features/checkout/checkoutSlice';
 
 import CheckoutItemSummary from '../components/CheckoutItemSummary';
 import {
+  setIsFirstLoad,
   setCustomerAddress,
   setCustomerAddress2,
   setCustomerCity,
@@ -28,6 +29,7 @@ const Checkout = () => {
 
   const { cart } = useSelector((state) => state.cart);
   const {
+    isFirstLoad,
     email,
     countryName,
     countryCode,
@@ -48,17 +50,22 @@ const Checkout = () => {
 
   const handleCountryChange = (e) => {
     const index = e.target.selectedIndex;
-    const countryElement = e.target.childNodes[index];
-    const countryId = countryElement.getAttribute('id');
-    const countryName = countryElement.getAttribute('value');
+    const tempCountryElement = e.target.childNodes[index];
+    const tempCountryId = tempCountryElement.getAttribute('id');
+    const tempCountryName = tempCountryElement.getAttribute('value');
 
-    dispatch(setCustomerCountryCode(countryId));
-    dispatch(setCustomerCountryName(countryName));
+    dispatch(setCustomerCountryCode(tempCountryId));
+    !isFirstLoad && dispatch(setCustomerCountryName(tempCountryName));
+    // WORKING ON TRYING TO GET THE COUNTRY SELECT VALUE TO PERSIST IF CUSTOMER NAVIGATES BACK
   };
 
   useEffect(() => {
     dispatch(generateToken(cart.id));
   }, [dispatch, cart]);
+
+  useEffect(() => {
+    shippingCountries.map((country) => console.log(country));
+  }, [shippingCountries]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -90,7 +97,7 @@ const Checkout = () => {
         const subdivisions = await shippingCountries[0].countries[0];
 
         dispatch(setCustomerCountryCode(countries));
-        dispatch(setCustomerCountryName(subdivisions));
+        isFirstLoad && dispatch(setCustomerCountryName(subdivisions));
 
         const checkout_id = await checkout.id;
         const country_code = await countryName;
@@ -109,10 +116,18 @@ const Checkout = () => {
         ) {
           dispatch(getShippingSubdivisions(chktCntryData));
         }
+        isFirstLoad && dispatch(setIsFirstLoad(false));
       }
     };
     setCountriesAndSubdivisions();
-  }, [dispatch, countryName, checkout, shippingCountries, countryCode]);
+  }, [
+    dispatch,
+    countryName,
+    checkout,
+    shippingCountries,
+    countryCode,
+    isFirstLoad,
+  ]);
 
   return (
     <div>
