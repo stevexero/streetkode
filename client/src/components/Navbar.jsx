@@ -34,9 +34,9 @@ const Navbar = () => {
     dispatch(openCartModal());
   };
 
-  useEffect(() => {
-    console.log(cart);
-  }, [cart]);
+  // useEffect(() => {
+  //   console.log(cart);
+  // }, [cart]);
 
   useEffect(() => {
     if (selectedValue === 'logout') {

@@ -5,6 +5,7 @@ const initialState = {
   email: '',
   countryName: '',
   countryCode: '',
+  countryZoneId: '',
   firstName: '',
   lastName: '',
   company: '',
@@ -30,6 +31,9 @@ export const customerInputSlice = createSlice({
     },
     setCustomerCountryCode: (state, action) => {
       state.countryCode = action.payload;
+    },
+    setCustomerCountryZoneId: (state, action) => {
+      state.countryZoneId = action.payload;
     },
     setCustomerFirstName: (state, action) => {
       state.firstName = action.payload;
@@ -60,6 +64,7 @@ export const {
   setCustomerEmail,
   setCustomerCountryName,
   setCustomerCountryCode,
+  setCustomerCountryZoneId,
   setCustomerFirstName,
   setCustomerLastName,
   setCustomerAddress,

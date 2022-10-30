@@ -12,6 +12,7 @@ import {
   setCustomerCity,
   setCustomerCountryCode,
   setCustomerCountryName,
+  setCustomerCountryZoneId,
   setCustomerEmail,
   setCustomerFirstName,
   setCustomerLastName,
@@ -33,6 +34,7 @@ const Checkout = () => {
     email,
     countryName,
     countryCode,
+    countryZoneId,
     firstName,
     lastName,
     address,
@@ -49,30 +51,27 @@ const Checkout = () => {
   const [isEmaiMeChecked, setIsEmailMeChecked] = useState(true);
 
   const handleCountryChange = (e) => {
-    const index = e.target.selectedIndex;
-    const tempCountryElement = e.target.childNodes[index];
-    const tempCountryId = tempCountryElement.getAttribute('id');
-    const tempCountryName = tempCountryElement.getAttribute('value');
+    const _indx = e.target.selectedIndex;
+    const _opEl = e.target.childNodes[_indx];
+    const _zoneId = _opEl.getAttribute('id');
+    const _countryCode = _opEl.getAttribute('value');
+    const _countryName = _opEl.text;
 
-    dispatch(setCustomerCountryCode(tempCountryId));
-    !isFirstLoad && dispatch(setCustomerCountryName(tempCountryName));
-    // WORKING ON TRYING TO GET THE COUNTRY SELECT VALUE TO PERSIST IF CUSTOMER NAVIGATES BACK
+    dispatch(setCustomerCountryZoneId(_zoneId));
+    !isFirstLoad && dispatch(setCustomerCountryCode(_countryCode));
+    dispatch(setCustomerCountryName(_countryName));
   };
 
   useEffect(() => {
     dispatch(generateToken(cart.id));
   }, [dispatch, cart]);
 
-  useEffect(() => {
-    shippingCountries.map((country) => console.log(country));
-  }, [shippingCountries]);
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const contactData = {
       email,
-      countryName,
+      countryCode,
       firstName,
       lastName,
       address,
@@ -83,6 +82,7 @@ const Checkout = () => {
     };
 
     navigate('/shipping', { state: { contactData } });
+    // FIXME: Remove the state prop and switch to global state in the shipping component
   };
 
   useEffect(() => {
@@ -93,25 +93,25 @@ const Checkout = () => {
   useEffect(() => {
     const setCountriesAndSubdivisions = async () => {
       if (shippingCountries.length > 0) {
-        const countries = await shippingCountries[0].id;
-        const subdivisions = await shippingCountries[0].countries[0];
+        const _initialZoneId = await shippingCountries[0].id;
+        const _initialCountryCode = await shippingCountries[0].countries[0];
 
-        dispatch(setCustomerCountryCode(countries));
-        isFirstLoad && dispatch(setCustomerCountryName(subdivisions));
+        dispatch(setCustomerCountryZoneId(_initialZoneId));
+        isFirstLoad && dispatch(setCustomerCountryCode(_initialCountryCode));
 
         const checkout_id = await checkout.id;
-        const country_code = await countryName;
-        const zone_id = await countryCode;
+        const _countryCode = await countryCode;
+        const _zoneId = await countryZoneId;
 
         const chktCntryData = {
           checkoutId: checkout_id,
-          countryCode: country_code,
-          zoneId: zone_id,
+          countryCode: _countryCode,
+          zoneId: _zoneId,
         };
 
         if (
           chktCntryData.checkoutId !== undefined &&
-          chktCntryData.countryCode !== '' &&
+          chktCntryData.countryName !== '' &&
           chktCntryData.zoneId !== ''
         ) {
           dispatch(getShippingSubdivisions(chktCntryData));
@@ -123,10 +123,11 @@ const Checkout = () => {
   }, [
     dispatch,
     countryName,
+    countryCode,
     checkout,
     shippingCountries,
-    countryCode,
     isFirstLoad,
+    countryZoneId,
   ]);
 
   return (
