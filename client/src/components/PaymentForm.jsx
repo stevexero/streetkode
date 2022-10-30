@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -33,11 +33,24 @@ const CARD_ELEMENT_OPTIONS = {
   },
 };
 
-const PaymentForm = ({ contactData }) => {
+const PaymentForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { checkout } = useSelector((state) => state.checkout);
+  const {
+    email,
+    // countryName,
+    countryCode,
+    // countryZoneId,
+    firstName,
+    lastName,
+    address,
+    address2,
+    city,
+    subdivision,
+    zipCode,
+  } = useSelector((state) => state.customerInput);
 
   const [totalCart] = useState(null);
   //   const [shippingOptions, setShippingOptions] = useState([]);
@@ -59,10 +72,6 @@ const PaymentForm = ({ contactData }) => {
 
   // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    console.log(contactData);
-  }, [contactData]);
-
   const handleSubmit = async (event, elements, stripe) => {
     event.preventDefault();
 
@@ -82,25 +91,25 @@ const PaymentForm = ({ contactData }) => {
         checkoutId: checkout.id,
         line_items: checkout.line_items,
         customer: {
-          email: contactData.email,
-          firstname: contactData.firstName,
-          lastname: contactData.lastName,
+          email: email,
+          firstname: firstName,
+          lastname: lastName,
         },
         shipping: {
           name: 'Primary',
-          street: contactData.address + ' ' + contactData.address2,
-          town_city: contactData.city,
-          county_state: contactData.subdivision,
-          postal_zip_code: contactData.zipCode,
-          country: contactData.countryName,
+          street: address + ' ' + address2,
+          town_city: city,
+          county_state: subdivision,
+          postal_zip_code: zipCode,
+          country: countryCode,
         },
         billing: {
           name: 'Primary',
-          street: contactData.address + ' ' + contactData.address2,
-          town_city: contactData.city,
-          county_state: contactData.subdivision,
-          postal_zip_code: contactData.zipCode,
-          country: contactData.countryName,
+          street: address + ' ' + address2,
+          town_city: city,
+          county_state: subdivision,
+          postal_zip_code: zipCode,
+          country: countryCode,
         },
         // fulfillment: { shipping_method: 'free' },
         // FIXME: work on fulfillment zones when shipping to multiple countries

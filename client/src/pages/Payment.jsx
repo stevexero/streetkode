@@ -1,25 +1,23 @@
-import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import PaymentForm from '../components/PaymentForm';
 
 const Payment = () => {
-  const location = useLocation();
-  const contactData = location.state.contactData;
+  const { email, address, address2, city, subdivision, zipCode } = useSelector(
+    (state) => state.customerInput
+  );
 
   return (
     <div>
       <label htmlFor='contact-email'>Contact</label>
-      <p id='contact-email'>{location.state.contactData.email}</p>
+      <p id='contact-email'>{email}</p>
       <label htmlFor='contact-address'>Ship To</label>
       <p id='contact-address'>
-        {location.state.contactData.address},{' '}
-        {location.state.contactData.address2}, {location.state.contactData.city}
-        , {location.state.contactData.subdivision},{' '}
-        {location.state.contactData.zipCode}
+        {address}, {address2}, {city}, {subdivision}, {zipCode}
       </p>
       <h1>Payment</h1>
       <p>All transactions are secure and encrypted</p>
-      <PaymentForm contactData={contactData} />
+      <PaymentForm />
     </div>
   );
 };

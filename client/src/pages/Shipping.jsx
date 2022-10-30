@@ -1,15 +1,13 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import CheckoutItemSummary from '../components/CheckoutItemSummary';
 
 const Shipping = () => {
-  const location = useLocation();
-  const contactData = location.state.contactData;
-
   const { shippingCountries } = useSelector((state) => state.shipping);
-  const { countryName } = useSelector((state) => state.customerInput);
+  const { email, countryName, address, address2, city, subdivision, zipCode } =
+    useSelector((state) => state.customerInput);
 
   useEffect(() => {
     const countries = shippingCountries.map(
@@ -24,18 +22,15 @@ const Shipping = () => {
     // );
 
     // console.log(countryName[0]);
-  }, [shippingCountries, contactData, countryName]);
+  }, [shippingCountries, countryName]);
 
   return (
     <div>
       <label htmlFor='contact-email'>Contact</label>
-      <p id='contact-email'>{location.state.contactData.email}</p>
+      <p id='contact-email'>{email}</p>
       <label htmlFor='contact-address'>Ship To</label>
       <p id='contact-address'>
-        {location.state.contactData.address},{' '}
-        {location.state.contactData.address2}, {location.state.contactData.city}
-        , {location.state.contactData.subdivision},{' '}
-        {location.state.contactData.zipCode}
+        {address}, {address2}, {city}, {subdivision}, {zipCode}
       </p>
       <h1>Shipping Method</h1>
       {/* <input
@@ -51,9 +46,7 @@ const Shipping = () => {
       <br />
       <Link to='/checkout'>{'<- Back to information'}</Link>
       <br />
-      <Link to='/payment' state={{ contactData }}>
-        Continue to payment
-      </Link>
+      <Link to='/payment'>Continue to payment</Link>
       <hr />
       <hr />
       <CheckoutItemSummary />

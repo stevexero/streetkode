@@ -40,7 +40,7 @@ const Checkout = () => {
     address,
     address2,
     city,
-    subdivision,
+    // subdivision,
     zipCode,
   } = useSelector((state) => state.customerInput);
   const { shippingCountries, shippingSubdivisions } = useSelector(
@@ -69,19 +69,7 @@ const Checkout = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const contactData = {
-      email,
-      countryCode,
-      firstName,
-      lastName,
-      address,
-      address2,
-      city,
-      subdivision,
-      zipCode,
-    };
-
-    navigate('/shipping', { state: { contactData } });
+    navigate('/shipping');
     // FIXME: Remove the state prop and switch to global state in the shipping component
   };
 
