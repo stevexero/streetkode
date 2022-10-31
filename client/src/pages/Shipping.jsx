@@ -1,28 +1,20 @@
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import CheckoutItemSummary from '../components/CheckoutItemSummary';
 
 const Shipping = () => {
-  const { shippingCountries } = useSelector((state) => state.shipping);
-  const { email, countryName, address, address2, city, subdivision, zipCode } =
-    useSelector((state) => state.customerInput);
-
-  useEffect(() => {
-    const countries = shippingCountries.map(
-      (country) => Object.keys(country.subdivisions)[0]
-    );
-
-    console.log(countries); // ['US', 'MX', 'CA']
-    console.log(countryName);
-
-    // const countryName = countries.filter(
-    //   (country) => country === contactData.countryName
-    // );
-
-    // console.log(countryName[0]);
-  }, [shippingCountries, countryName]);
+  //   const { shippingCountries } = useSelector((state) => state.shipping);
+  const {
+    email,
+    countryName,
+    address,
+    address2,
+    city,
+    subdivisionCode,
+    zipCode,
+  } = useSelector((state) => state.customerInput);
 
   return (
     <div>
@@ -30,7 +22,8 @@ const Shipping = () => {
       <p id='contact-email'>{email}</p>
       <label htmlFor='contact-address'>Ship To</label>
       <p id='contact-address'>
-        {address}, {address2}, {city}, {subdivision}, {zipCode}
+        {address}, {address2}, {city}, {subdivisionCode}, {zipCode},{' '}
+        {countryName}
       </p>
       <h1>Shipping Method</h1>
       {/* <input

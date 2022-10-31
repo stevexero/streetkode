@@ -152,6 +152,9 @@ const Checkout = () => {
         <br />
         <label htmlFor='country'>Country</label>
         <select name='country' id='country' onChange={handleCountryChange}>
+          <option id={countryZoneId} value={countryCode}>
+            {countryName === '' ? 'Select Country' : countryName}
+          </option>
           {shippingCountries &&
             shippingCountries.map((country) => (
               <option
@@ -205,6 +208,12 @@ const Checkout = () => {
         <br />
         <label htmlFor='state'>State / Subdivision</label>
         <select name='state' id='state' onChange={handleSubdivisionChange}>
+          <option id={subdivisionCode} value={subdivisionCode}>
+            {subdivisionName === ''
+              ? 'Select state / subdivision'
+              : subdivisionName}
+          </option>
+          {/* FIXME: add condition to check if country has changed as this state persists the old subdivision on country change */}
           {Object.entries(shippingSubdivisions).map(
             ([subCode, subName], index) => (
               <option key={index} id={subCode} value={subCode}>
