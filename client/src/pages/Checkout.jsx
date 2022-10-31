@@ -16,7 +16,8 @@ import {
   setCustomerEmail,
   setCustomerFirstName,
   setCustomerLastName,
-  setCustomerSubdivision,
+  setCustomerSubdivisionCode,
+  setCustomerSubdivisionName,
   setCustomerZipCode,
 } from '../features/customerInputs/customerInputSlice';
 import {
@@ -40,7 +41,8 @@ const Checkout = () => {
     address,
     address2,
     city,
-    // subdivision,
+    subdivisionCode,
+    subdivisionName,
     zipCode,
   } = useSelector((state) => state.customerInput);
   const { shippingCountries, shippingSubdivisions } = useSelector(
@@ -62,6 +64,16 @@ const Checkout = () => {
     dispatch(setCustomerCountryName(_countryName));
   };
 
+  const handleSubdivisionChange = (e) => {
+    const _indx = e.target.selectedIndex;
+    const _opEl = e.target.childNodes[_indx];
+    const _subdivisionCode = _opEl.getAttribute('value');
+    const _subdivisionName = _opEl.text;
+
+    dispatch(setCustomerSubdivisionCode(_subdivisionCode));
+    dispatch(setCustomerSubdivisionName(_subdivisionName));
+  };
+
   useEffect(() => {
     dispatch(generateToken(cart.id));
   }, [dispatch, cart]);
@@ -70,7 +82,6 @@ const Checkout = () => {
     e.preventDefault();
 
     navigate('/shipping');
-    // FIXME: Remove the state prop and switch to global state in the shipping component
   };
 
   useEffect(() => {
@@ -84,7 +95,7 @@ const Checkout = () => {
         const _initialZoneId = await shippingCountries[0].id;
         const _initialCountryCode = await shippingCountries[0].countries[0];
 
-        dispatch(setCustomerCountryZoneId(_initialZoneId));
+        isFirstLoad && dispatch(setCustomerCountryZoneId(_initialZoneId));
         isFirstLoad && dispatch(setCustomerCountryCode(_initialCountryCode));
 
         const checkout_id = await checkout.id;
@@ -193,11 +204,7 @@ const Checkout = () => {
         />
         <br />
         <label htmlFor='state'>State / Subdivision</label>
-        <select
-          name='state'
-          id='state'
-          onChange={(e) => dispatch(setCustomerSubdivision(e.target.value))}
-        >
+        <select name='state' id='state' onChange={handleSubdivisionChange}>
           {Object.entries(shippingSubdivisions).map(
             ([subCode, subName], index) => (
               <option key={index} id={subCode} value={subCode}>

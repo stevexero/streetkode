@@ -12,7 +12,8 @@ const initialState = {
   address: '',
   address2: '',
   city: '',
-  subdivision: '',
+  subdivisionName: '',
+  subdivisionCode: '',
   zipCode: '',
 };
 
@@ -50,8 +51,11 @@ export const customerInputSlice = createSlice({
     setCustomerCity: (state, action) => {
       state.city = action.payload;
     },
-    setCustomerSubdivision: (state, action) => {
-      state.subdivision = action.payload;
+    setCustomerSubdivisionCode: (state, action) => {
+      state.subdivisionCode = action.payload;
+    },
+    setCustomerSubdivisionName: (state, action) => {
+      state.subdivisionName = action.payload;
     },
     setCustomerZipCode: (state, action) => {
       state.zipCode = action.payload;
@@ -70,7 +74,8 @@ export const {
   setCustomerAddress,
   setCustomerAddress2,
   setCustomerCity,
-  setCustomerSubdivision,
+  setCustomerSubdivisionCode,
+  setCustomerSubdivisionName,
   setCustomerZipCode,
 } = customerInputSlice.actions;
 export default customerInputSlice.reducer;
