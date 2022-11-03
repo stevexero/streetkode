@@ -4,7 +4,7 @@ import shippingService from './shippingService';
 const initialState = {
   shippingCountries: [],
   shippingSubdivisions: {},
-  shipping: {},
+  shippingOptions: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -55,9 +55,9 @@ export const getShippingSubdivisions = createAsyncThunk(
 // PUBLIC
 export const getShippingOptions = createAsyncThunk(
   'shipping/get-shipping-options',
-  async (id, data, thunkAPI) => {
+  async (shippingData, thunkAPI) => {
     try {
-      return await shippingService.getShippingOptions(id, data);
+      return await shippingService.getShippingOptions(shippingData);
     } catch (error) {
       const message =
         (error.response &&
@@ -118,8 +118,8 @@ export const shippingSlice = createSlice({
       .addCase(getShippingOptions.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.shipping = action.payload;
-        // console.log(action.payload);
+        state.shippingOptions = action.payload;
+        console.log(action.payload);
       })
       .addCase(getShippingOptions.rejected, (state, action) => {
         state.isLoading = false;

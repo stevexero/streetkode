@@ -48,9 +48,10 @@ const PaymentForm = () => {
     address,
     address2,
     city,
-    subdivision,
+    subdivisionCode,
     zipCode,
   } = useSelector((state) => state.customerInput);
+  const { shippingOptions } = useSelector((state) => state.shipping);
 
   const [totalCart] = useState(null);
   //   const [shippingOptions, setShippingOptions] = useState([]);
@@ -99,7 +100,7 @@ const PaymentForm = () => {
           name: 'Primary',
           street: address + ' ' + address2,
           town_city: city,
-          county_state: subdivision,
+          county_state: subdivisionCode,
           postal_zip_code: zipCode,
           country: countryCode,
         },
@@ -107,11 +108,11 @@ const PaymentForm = () => {
           name: 'Primary',
           street: address + ' ' + address2,
           town_city: city,
-          county_state: subdivision,
+          county_state: subdivisionCode,
           postal_zip_code: zipCode,
           country: countryCode,
         },
-        // fulfillment: { shipping_method: 'free' },
+        fulfillment: { shipping_method: shippingOptions[0].id },
         // FIXME: work on fulfillment zones when shipping to multiple countries
         payment: {
           gateway: 'stripe',

@@ -36,9 +36,28 @@ const getShippingSubdivisions = async (chktCntryData) => {
   return res.data.subdivisions;
 };
 
+// GET SHIPPING OPTIONS FOR COUNTRY
+const getShippingOptions = async (shippingData) => {
+  const config = {
+    headers: {
+      'X-Authorization': process.env.REACT_APP_COMMERCE_API_KEY_TEST,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const res = await axios.get(
+    `https://api.chec.io/v1/checkouts/${shippingData.checkoutId}/helper/shipping_options?country=${shippingData.countryCode}`,
+    config
+  );
+
+  return res.data;
+};
+
 const shippingService = {
   getShippingCountries,
   getShippingSubdivisions,
+  getShippingOptions,
 };
 
 export default shippingService;

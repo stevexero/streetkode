@@ -70,7 +70,7 @@ export const checkoutSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.checkout = action.payload;
-        // console.log(action.payload);
+        console.log(action.payload);
       })
       .addCase(generateToken.rejected, (state, action) => {
         state.isLoading = false;
