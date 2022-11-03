@@ -2,8 +2,8 @@ const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 // const nodemailer = require('nodemailer');
-// const sgMail = require('@sendgrid/mail');
-// sgMail.setApiKey(process.env.SEND_GRID_API_KEY_2);
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SEND_GRID_API_KEY_2);
 
 const User = require('../models/userModel');
 
@@ -59,34 +59,34 @@ const registerUser = asyncHandler(async (req, res) => {
 // @desc    Send Welcome Email
 // @route   /api/users/welcome
 // @access  Public
-// const sendWelcomeMail = asyncHandler(async (req, res) => {
-//   const { email, name } = req.body;
+const sendWelcomeMail = asyncHandler(async (req, res) => {
+  const { email, name } = req.body;
 
-//   const msg = {
-//     to: email,
-//     from: 'accountservices@dillynote.com', // Change after I get SmolBits email set up
-//     subject: 'Welcome to SmolBits!',
-//     text: 'and easy to do anywhere, even with Node.js',
-//     html: `<div>
-//               <h1>Hello ${name}!</h1>
-//               <h2>Welcome to SmolBits!</h2>
-//               <p>I'm excited to have you here and hope to provide the tools you need to unleash your creativity!</p>
-//               <p>If you have any feedback, questions, or comments at all, please <a href="mailto:kylokyoshi@gmail.com">email</a> me!</p>
-//               <p>Sincerely,</p>
-//               <p>- Kylo Kyoshi</p>
-//             </div>`,
-//   };
+  const msg = {
+    to: email,
+    from: 'accountservices@dillynote.com', // Change after I get StreetKode email set up
+    subject: 'Welcome to StreetKode!',
+    text: 'and easy to do anywhere, even with Node.js',
+    html: `<div>
+              <h1>Hello ${name}!</h1>
+              <h2>Welcome to StreetKode!</h2>
+              <p>We're excited to have you here and hope to provide the tools you need to unleash your creativity!</p>
+              <p>If you have any feedback, questions, or comments at all, please <a href="mailto:kylokyoshi@gmail.com">email</a> me!</p>
+              <p>Sincerely,</p>
+              <p>- Kylo Kyoshi</p>
+            </div>`,
+  };
 
-//   sgMail
-//     .send(msg)
-//     .then((response) => {
-//       console.log(response[0].statusCode);
-//       console.log(response[0].headers);
-//     })
-//     .catch((error) => {
-//       console.error(error);
-//     });
-// });
+  sgMail
+    .send(msg)
+    .then((response) => {
+      console.log(response[0].statusCode);
+      console.log(response[0].headers);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+});
 
 // @desc    Login a user
 // @route   /api/users/login
@@ -153,7 +153,7 @@ const generateToken = (id) => {
 module.exports = {
   registerUser,
   loginUser,
-  //   sendWelcomeMail,
+  sendWelcomeMail,
   getMe,
   updateUser,
 };

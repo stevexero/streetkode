@@ -14,11 +14,11 @@ const register = async (userData) => {
 };
 
 // Send Welcome Email
-// const sendWelcomeMail = async (userData) => {
-//   const res = await axios.post(API_URL + 'welcome', userData);
+const sendWelcomeMail = async (userData) => {
+  const res = await axios.post(API_URL + 'welcome', userData);
 
-//   return res.data;
-// };
+  return res.data;
+};
 
 // LOGOUT
 const logout = () => {
@@ -72,7 +72,7 @@ const authService = {
   login,
   updateUser,
   getMe,
-  //   sendWelcomeMail,
+  sendWelcomeMail,
 };
 
 export default authService;

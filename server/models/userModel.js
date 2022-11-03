@@ -24,6 +24,10 @@ const userSchema = mongoose.Schema(
       enum: ['guest', 'seller'],
       default: 'guest',
     },
+    verifiedEmail: {
+      type: Boolean,
+      default: false,
+    },
     shop: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Shop',

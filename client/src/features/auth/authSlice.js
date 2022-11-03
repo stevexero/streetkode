@@ -31,23 +31,24 @@ export const register = createAsyncThunk(
   }
 );
 
-// export const sendWelcomeMail = createAsyncThunk(
-//   'auth/sendWelcomeMail',
-//   async (userData, thunkAPI) => {
-//     try {
-//       return await authService.sendWelcomeMail(userData);
-//     } catch (error) {
-//       const message =
-//         (error.response &&
-//           error.response.data &&
-//           error.response.data.message) ||
-//         error.message ||
-//         error.toString();
+// SEND WELCOME EMAIL
+export const sendWelcomeMail = createAsyncThunk(
+  'auth/sendWelcomeMail',
+  async (userData, thunkAPI) => {
+    try {
+      return await authService.sendWelcomeMail(userData);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
 
-//       return thunkAPI.rejectWithValue(message);
-//     }
-//   }
-// );
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 // LOGIN
 export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
@@ -129,20 +130,20 @@ export const authSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
-      //   .addCase(sendWelcomeMail.pending, (state) => {
-      //     state.isLoading = true;
-      //   })
-      //   .addCase(sendWelcomeMail.fulfilled, (state, action) => {
-      //     state.isLoading = false;
-      //     state.isSuccess = true;
-      //     console.log(action.payload);
-      //   })
-      //   .addCase(sendWelcomeMail.rejected, (state, action) => {
-      //     state.isLoading = false;
-      //     state.user = null;
-      //     state.isError = true;
-      //     state.message = action.payload;
-      //   })
+      .addCase(sendWelcomeMail.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(sendWelcomeMail.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        console.log(action.payload);
+      })
+      .addCase(sendWelcomeMail.rejected, (state, action) => {
+        state.isLoading = false;
+        state.user = null;
+        state.isError = true;
+        state.message = action.payload;
+      })
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
       })

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { closeAuthModal } from '../../features/modals/modalSlice';
 import {
   register,
-  //   sendWelcomeMail,
+  sendWelcomeMail,
   reset,
 } from '../../features/auth/authSlice';
 // import GoogleLoginButton from './GoogleLoginButton';
@@ -38,7 +38,7 @@ const Signup = () => {
     };
 
     dispatch(register(signupData));
-    // dispatch(sendWelcomeMail(signupData));
+    dispatch(sendWelcomeMail(signupData));
 
     setEmail('');
     setName('');
