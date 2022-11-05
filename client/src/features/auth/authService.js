@@ -20,12 +20,19 @@ const sendWelcomeMail = async (userData) => {
   return res.data;
 };
 
+// Send Verification Thank You Email
+const sendVerificationThankYouMail = async (userData) => {
+  const res = await axios.post(API_URL + 'verification-thank-you', userData);
+
+  return res.data;
+};
+
 // LOGOUT
 const logout = () => {
   localStorage.removeItem('streetkodeuser');
 };
 
-// LOGIM
+// LOGIN
 const login = async (userData) => {
   const res = await axios.post(API_URL + 'login', userData);
 
@@ -66,6 +73,27 @@ const updateUser = async (userData, token) => {
   return res.data;
 };
 
+// Verify User
+const verifyUser = async (user, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const res = await axios.patch(
+    API_URL + `verify/${user.verifyId}`,
+    { userId: user._id },
+    config
+  );
+
+  if (res.data) {
+    localStorage.setItem('streetkodeuser', JSON.stringify(res.data));
+  }
+
+  return res.data;
+};
+
 const authService = {
   register,
   logout,
@@ -73,6 +101,8 @@ const authService = {
   updateUser,
   getMe,
   sendWelcomeMail,
+  sendVerificationThankYouMail,
+  verifyUser,
 };
 
 export default authService;

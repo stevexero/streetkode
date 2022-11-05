@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import uuid from 'react-uuid';
 // import { gapi } from 'gapi-script';
 
 import { closeAuthModal } from '../../features/modals/modalSlice';
@@ -35,6 +36,7 @@ const Signup = () => {
       name,
       password,
       singupFrom: 'email',
+      verifyId: uuid(),
     };
 
     dispatch(register(signupData));
@@ -44,14 +46,6 @@ const Signup = () => {
     setName('');
     setPassword('');
     setPassword2('');
-
-    //
-    // try {
-    //   axios.post('http://localhost:8000/send_mail', { text: 'hi from signup' });
-    // } catch (error) {
-    //   console.log(error);
-    // }
-    //
 
     dispatch(closeAuthModal());
   };

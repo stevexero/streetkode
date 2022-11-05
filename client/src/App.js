@@ -15,6 +15,8 @@ import Payment from './pages/Payment';
 // Private - Guest
 import RegisterShop from './pages/RegisterShop';
 import Profile from './pages/Profile';
+import Verification from './pages/Verification';
+import EmailNotVerifiedBanner from './components/EmailNotVerifiedBanner';
 
 // Private - Seller
 import AddProduct from './pages/AddProduct';
@@ -33,6 +35,7 @@ function App() {
   return (
     <>
       <Router>
+        {user && user.verifiedEmail === false && <EmailNotVerifiedBanner />}
         <Navbar />
         <Routes>
           <Route path='/' element={<Home />} />
@@ -59,6 +62,7 @@ function App() {
             path='/profile/:id'
             element={user ? <Profile /> : <NotFound />}
           />
+          <Route path='/verify/:verifyId' element={<Verification />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
         <Footer />

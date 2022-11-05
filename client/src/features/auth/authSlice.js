@@ -50,6 +50,25 @@ export const sendWelcomeMail = createAsyncThunk(
   }
 );
 
+// SEND VERIFICATION THANK YOU EMAIL
+export const sendVerificationThankYouMail = createAsyncThunk(
+  'auth/verification-thank-you',
+  async (userData, thunkAPI) => {
+    try {
+      return await authService.sendVerificationThankYouMail(userData);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 // LOGIN
 export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
   try {
@@ -84,12 +103,33 @@ export const getMe = createAsyncThunk('auth/getme', async (_, thunkAPI) => {
   }
 });
 
+// Update User
 export const updateUser = createAsyncThunk(
   'auth/update',
   async (userData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
       return await authService.updateUser(userData, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Verify User
+export const verifyUser = createAsyncThunk(
+  'auth/verify-user',
+  async (user, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.verifyUser(user, token);
     } catch (error) {
       const message =
         (error.response &&
@@ -136,9 +176,21 @@ export const authSlice = createSlice({
       .addCase(sendWelcomeMail.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        console.log(action.payload);
       })
       .addCase(sendWelcomeMail.rejected, (state, action) => {
+        state.isLoading = false;
+        state.user = null;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(sendVerificationThankYouMail.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(sendVerificationThankYouMail.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(sendVerificationThankYouMail.rejected, (state, action) => {
         state.isLoading = false;
         state.user = null;
         state.isError = true;
@@ -182,6 +234,19 @@ export const authSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(getMe.rejected, (state, action) => {
+        state.isLoading = false;
+        state.user = null;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(verifyUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(verifyUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(verifyUser.rejected, (state, action) => {
         state.isLoading = false;
         state.user = null;
         state.isError = true;

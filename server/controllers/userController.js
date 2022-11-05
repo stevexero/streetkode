@@ -11,7 +11,7 @@ const User = require('../models/userModel');
 // @route   /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, signupFrom } = req.body;
+  const { name, email, password, signupFrom, verifyId } = req.body;
 
   //   Validation
   if (!name || !email || !password) {
@@ -37,6 +37,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     memberType: 'guest',
     password: hashedPassword,
+    verifyId: verifyId,
     signupFrom,
   });
 
@@ -48,6 +49,8 @@ const registerUser = asyncHandler(async (req, res) => {
       memberType: user.memberType,
       signupFrom: user.signupFrom,
       shop: user.shop,
+      verifyId: user.verifyId,
+      verifiedEmail: user.verifiedEmail,
       token: generateToken(user._id),
     });
   } else {
@@ -60,17 +63,54 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   /api/users/welcome
 // @access  Public
 const sendWelcomeMail = asyncHandler(async (req, res) => {
-  const { email, name } = req.body;
+  const { email, name, verifyId } = req.body;
 
   const msg = {
     to: email,
     from: 'accountservices@dillynote.com', // Change after I get StreetKode email set up
     subject: 'Welcome to StreetKode!',
-    text: 'and easy to do anywhere, even with Node.js',
+    text: 'Welcome to StreetKode!!',
     html: `<div>
               <h1>Hello ${name}!</h1>
               <h2>Welcome to StreetKode!</h2>
               <p>We're excited to have you here and hope to provide the tools you need to unleash your creativity!</p>
+              <br />
+              <br />
+              <p>Also, please verify your email by clicking <a href="http://localhost:3000/verify/${verifyId}" target="_blank">here</a></p>
+              <br />
+              <br />
+              <p>If you have any feedback, questions, or comments at all, please <a href="mailto:kylokyoshi@gmail.com">email</a> me!</p>
+              <p>Sincerely,</p>
+              <p>- Kylo Kyoshi</p>
+            </div>`,
+  };
+
+  sgMail
+    .send(msg)
+    .then((response) => {
+      console.log(response[0].statusCode);
+      console.log(response[0].headers);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+});
+
+// @desc    Send Verification Thank You Email
+// @route   /api/users/verification-thank-you
+// @access  Public
+const sendVerificationThankYouMail = asyncHandler(async (req, res) => {
+  const { email, name } = req.body;
+
+  const msg = {
+    to: email,
+    from: 'accountservices@dillynote.com', // Change after I get StreetKode email set up
+    subject: 'Thank you for verifying your email!',
+    text: 'Thank you for verifying your email!!',
+    html: `<div>
+              <h1>Hello ${name}!</h1>
+              <h2>Welcome to StreetKode!</h2>
+              <p>Thank you for verifying your email!</p>
               <p>If you have any feedback, questions, or comments at all, please <a href="mailto:kylokyoshi@gmail.com">email</a> me!</p>
               <p>Sincerely,</p>
               <p>- Kylo Kyoshi</p>
@@ -104,6 +144,8 @@ const loginUser = asyncHandler(async (req, res) => {
       memberType: user.memberType,
       signupFrom: user.signupFrom,
       shop: user.shop,
+      verifyId: user.verifyId,
+      verifiedEmail: user.verifiedEmail,
       token: generateToken(user._id),
     });
   } else {
@@ -121,6 +163,8 @@ const getMe = asyncHandler(async (req, res) => {
     email: req.user.email,
     name: req.user.name,
     memberType: req.user.memberType,
+    verifyId: req.user.verifyId,
+    verifiedEmail: req.user.verifiedEmail,
     shop: req.user.shop,
   };
 
@@ -144,6 +188,23 @@ const updateUser = asyncHandler(async (req, res) => {
   res.status(200).json(user);
 });
 
+// @desc    Verify user
+// @route   /api/users/verify/:verifyId
+// @access  Private
+const verifyUser = asyncHandler(async (req, res) => {
+  const { userId } = req.body;
+
+  const user = await User.findOneAndUpdate(
+    { _id: userId },
+    {
+      $set: { verifiedEmail: true },
+    },
+    { new: true }
+  );
+
+  res.status(200).json(user);
+});
+
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: '30d',
@@ -154,6 +215,8 @@ module.exports = {
   registerUser,
   loginUser,
   sendWelcomeMail,
+  sendVerificationThankYouMail,
   getMe,
   updateUser,
+  verifyUser,
 };

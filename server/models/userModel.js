@@ -24,6 +24,9 @@ const userSchema = mongoose.Schema(
       enum: ['guest', 'seller'],
       default: 'guest',
     },
+    verifyId: {
+      type: String,
+    },
     verifiedEmail: {
       type: Boolean,
       default: false,
